@@ -3,28 +3,26 @@ import ply.lex as lex
 
 
 reserved = {
-    'int' : 'INT',
-    'string' : 'STRING',
-    'float' : 'FLOAT',
-    'adapt' : 'ADAPT',
-    'void' : 'VOID',
-    'init' : 'INIT',
-    'return' : 'RETURN',
-    'for' : 'FOR',
-    'if' : 'IF',
-    'while' : 'WHILE',
-    'else' : 'ELSE',
-    'true' : 'TRUE',
-    'false' : 'FALSE',
-    'func' : 'FUNC',
-    'print' : 'PRINT',
-    'accept' : 'ACCEPT'
+    'int':'INT',
+    'string':'STRING',
+    'float':'FLOAT',
+    'adapt':'ADAPT',
+    'void':'VOID',
+    'init':'INIT',
+    'return':'RETURN',
+    'for':'FOR',
+    'if':'IF',
+    'while':'WHILE',
+    'else':'ELSE',
+    'func':'FUNC',
+    'print':'PRINT',
+    'accept':'ACCEPT',
 }
 
 literals = ['{', '}', '(', ')', ',','"', ';']
 
 tokens = ['UNARY', 'ADD', 'SUB', 'DIV', 'MUL', 'OR', 'LE', 'GE', 'EQ', 'NE', 'GT', 'LT', 'AND', 'EQUAL',
-    'INT_VALUE', 'FLOAT_VALUE', 'CHAR_VALUE', 'STRING_VALUE', 'IDENTIFIER', 'WHITESPACE', 'COMMENTS'
+    'INT_VALUE', 'FLOAT_VALUE', 'STRING_VALUE', 'IDENTIFIER', 'WHITESPACE', 'COMMENTS'
 ]+list(reserved.values())
 
 
@@ -42,6 +40,8 @@ t_NE = r'!='
 t_GT = r'>'
 t_LT = r'<'
 t_AND = r'&&'
+t_ignore_WHITESPACE= r'[ \t\r\v\f]'
+t_ignore_COMMENTS = r'\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/'
 
 
 
@@ -57,16 +57,19 @@ def t_FLOAT_VALUE(t):
 
 def t_STRING_VALUE(t):
      r'[a-zA-Z]+'
+     t.type = reserved.get(t.value,'STRING_VALUE')
      t.value = str(t.value)
-     return t
+     return t   
  
-def t_WHITESPACE(t):
-    r'[ \t\r\v\f]'
-    pass
+def t_True(t):
+    r'true'
+    t.value = True
+    return t
 
-def t_COMMENTS(t):
-    r'\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/'
-    pass
+def t_False(t):
+    r'false'
+    t.value = False
+    return t
     
 def t_IDENTIFIER(t):
     r'[a-zA-Z]([a-zA-Z]|[-]?[0-9]+)*'
@@ -84,7 +87,7 @@ def t_error(t):
 
 lexer = lex.lex()
 #test lexer sample output
-input = open("input2.txt", "r") 
+input = open("input1.txt", "r") 
 
 lexer.input(input.read()) #read from input sample file
 
@@ -94,4 +97,3 @@ while True:
     if not tok:
         break
     print(tok)
-
