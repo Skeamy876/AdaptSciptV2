@@ -1,1 +1,1 @@
-func init(){print(Hello World)}
+func init() {print("Hello World")}

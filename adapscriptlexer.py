@@ -2,6 +2,7 @@
 import ply.lex as lex
 
 
+#dictionary of reserved words
 reserved = {
     'int':'INT',
     'string':'STRING',
@@ -19,8 +20,9 @@ reserved = {
     'accept':'ACCEPT',
 }
 
-literals = ['{', '}', '(', ')', ',','"', ';']
+literals = ['{', '}', '(', ')', ',','"', ';'] #list of literals
 
+#token definitions
 tokens = ['UNARY', 'ADD', 'SUB', 'DIV', 'MUL', 'OR', 'LE', 'GE', 'EQ', 'NE', 'GT', 'LT', 'AND', 'EQUAL',
     'INT_VALUE', 'FLOAT_VALUE', 'STRING_VALUE', 'IDENTIFIER', 'WHITESPACE', 'COMMENTS'
 ]+list(reserved.values())
@@ -87,10 +89,10 @@ def t_error(t):
 
 lexer = lex.lex()
 #test lexer sample output
-input = open("input1.txt", "r") 
+input = open("input3.txt", "r") 
 
 lexer.input(input.read()) #read from input sample file
-
+input.close()
 
 while True: 
     tok = lexer.token()

@@ -16,7 +16,8 @@ def p_program(p):
     p[0] = p[1]
 
 def p_programStart(p):
-    'programStart : FUNC INIT "(" ")" "{" statements "}" '
+    '''programStart : FUNC INIT "(" ")" "{" statements "}" '''
+    p[0] = p[6]
     
 def p_statements(p):
     '''statements : statement
@@ -28,11 +29,10 @@ def p_statement(p):
                 | function_declarations
                 | expression
                 | loops
-                | RETURN variable
-                | ACCEPT "(" variable ")"
-                | PRINT "(" variable ")"
-                | ACCEPT "(" atoms ")"
-                | PRINT "(" STRING_VALUE atoms ")" ")"'''
+                | RETURN expression
+                | PRINT "(" expression ")"
+                | assignment
+                '''
                 
                 
 def p_function_declarations(p):
@@ -51,9 +51,6 @@ def p_function_calls(p):
                      | IDENTIFIER "(" parameters ")" 
                      | IDENTIFIER "(" parameters ")" function_calls'''
                      
-def p_variable(p):
-    '''variable : IDENTIFIER '''
-
 def p_parameters(p):
     '''parameters : parameterList'''
 
@@ -70,35 +67,59 @@ def p_datatype(p):
                     | STRING
                     | ADAPT
                     | VOID'''
+                    
+
+def p_expression(p):
+        '''expression : atoms
+                    | paren_expr
+                    | binary_expr'''
             
 def p_atom(p):
         '''atoms : INT_VALUE
                 | FLOAT_VALUE
                 | STRING_VALUE
                 | variable'''
+                
+def p_variable(p):
+    '''variable : IDENTIFIER '''
 
 def p_paren_expr(p):
         '''paren_expr : "(" expression ")"'''
 
 def p_binary_expr(p):
-        '''binary_expr : variable ADD expression
-                    | variable SUB expression
-                    | variable MUL expression
-                    | variable DIV expression
-                    | variable OR expression
-                    | variable LE expression
-                    | variable GE expression
-                    | variable EQ expression
-                    | variable NE expression
-                    | variable GT expression
-                    | variable LT expression
-                    | UNARY expression
-                    | expression UNARY'''      
-
-def p_expression(p):
-        '''expression : atoms
-                    | paren_expr
-                    | binary_expr'''
+        '''binary_expr : atoms ADD expression
+                    | atoms SUB expression
+                    | atoms MUL expression
+                    | atoms DIV expression
+                    | atoms OR expression
+                    | atoms LE expression
+                    | atoms GE expression
+                    | atoms EQ expression
+                    | atoms NE expression
+                    | atoms GT expression
+                    | atoms LT expression
+                    | UNARY atoms
+                    | atoms UNARY'''
+                    
+def p_assignment(p):    
+        '''assignment : datatype IDENTIFIER EQUAL expression 
+                      | datatype IDENTIFIER EQUAL ACCEPT "(" ")" '''
+        if len(p) == 5:   
+                if (p[1] == 'INT' and isinstance(p[4], int)) or \
+                        (p[1] == 'FLOAT' and isinstance(p[4], float)) or \
+                        (p[1] == 'STRING' and isinstance(p[4], str)):
+                        p[0] = p[4]
+                else:
+                   print("Type error: Type of the expression doesn't match the variable type")
+        else:
+                # Assignment from user input
+                user_input = input()
+                if p[1] == 'INT':
+                        p[0] = int(user_input)
+                elif p[1] == 'FLOAT':
+                        p[0] = float(user_input)
+                elif p[1] == 'STRING':
+                        p[0] = user_input
 
 def p_condition(p):
         '''condition : IF expression "{" statements "}"
@@ -125,11 +146,12 @@ def p_error(p):
    
    
 
-parser = yacc.yacc()
+parser = yacc.yacc( debug=True)
 try:
-    input = open("input1.txt", "r") 
+    input = open("input3.txt", "r") 
 except EOFError:
     print("End of file Error")
+
     
 result = parser.parse(input.read())
 if result is not None:
