@@ -1,0 +1,152 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ACCEPT
+    AND
+    COMMENTS
+    EQUAL
+    PRINT
+    UNARY
+    WHITESPACE
+
+Grammar
+
+Rule 0     S' -> programStart
+Rule 1     programStart -> FUNC INIT ( ) { function_declarations statements }
+Rule 2     statements -> statement 
+
+Rule 3     statements -> statements statement 
+
+Rule 4     statement -> function_calls
+Rule 5     statement -> condition
+Rule 6     statement -> expression
+Rule 7     statement -> loops
+Rule 8     statement -> RETURN variable
+Rule 9     function_declarations -> 
+
+Rule 10    function_declarations -> function_declaration
+Rule 11    function_declarations -> function_declaration function_declarations
+Rule 12    function_declaration -> FUNC function_name : datatype { function_body }
+Rule 13    function_body -> statements
+Rule 14    function_calls -> function_name
+Rule 15    function_calls -> function_name parameters
+Rule 16    variable -> IDENTIFIER 
+
+Rule 17    parameters -> parameterList
+Rule 18    parameterList -> parameter
+Rule 19    parameterList -> parameter , parameterList
+Rule 20    parameter -> datatype IDENTIFIER
+Rule 21    datatype -> INT
+Rule 22    datatype -> FLOAT
+Rule 23    datatype -> STRING
+Rule 24    datatype -> CHAR
+Rule 25    datatype -> ADAPT
+Rule 26    datatype -> VOID
+Rule 27    atom -> INT_VALUE
+Rule 28    atom -> FLOAT_VALUE
+Rule 29    atom -> CHAR_VALUE
+Rule 30    atom -> STRING_VALUE
+Rule 31    atom -> variable
+Rule 32    atom -> TRUE
+Rule 33    atom -> FALSE
+Rule 34    paren_expr -> ( expression )
+Rule 35    binary_expr -> variable ADD expression
+Rule 36    binary_expr -> variable SUB expression
+Rule 37    binary_expr -> variable MUL expression
+Rule 38    binary_expr -> variable DIV expression
+Rule 39    binary_expr -> variable OR expression
+Rule 40    binary_expr -> variable LE expression
+Rule 41    binary_expr -> variable GE expression
+Rule 42    binary_expr -> variable EQ expression
+Rule 43    binary_expr -> variable NE expression
+Rule 44    binary_expr -> variable GT expression
+Rule 45    binary_expr -> variable LT expression
+Rule 46    expression -> atom
+Rule 47    expression -> paren_expr
+Rule 48    expression -> binary_expr
+Rule 49    condition -> IF expression { statements }
+Rule 50    condition -> IF expression { statements } ELSE { statements }
+Rule 51    loops -> loop
+Rule 52    loops -> loop loops
+Rule 53    loop -> forLoop
+Rule 54    loop -> whileLoop
+Rule 55    forLoop -> FOR ( expression ; condition ; expression ) { statements }
+Rule 56    whileLoop -> WHILE ( condition ) { statements }
+
+Terminals, with rules where they appear
+
+
+                    : 2 3 9 16
+(                    : 1 34 55 56
+)                    : 1 34 55 56
+,                    : 19
+:                    : 12
+;                    : 55 55
+ACCEPT               : 
+ADAPT                : 25
+ADD                  : 35
+AND                  : 
+CHAR_VALUE           : 29
+COMMENTS             : 
+DIV                  : 38
+ELSE                 : 50
+EQ                   : 42
+EQUAL                : 
+FALSE                : 33
+FLOAT                : 22
+FLOAT_VALUE          : 28
+FOR                  : 55
+FUNC                 : 1 12
+GE                   : 41
+GT                   : 44
+IDENTIFIER           : 16 20
+IF                   : 49 50
+INIT                 : 1
+INT                  : 21
+INT_VALUE            : 27
+LE                   : 40
+LT                   : 45
+MUL                  : 37
+NE                   : 43
+OR                   : 39
+PRINT                : 
+RETURN               : 8
+STRING               : 23
+STRING_VALUE         : 30
+SUB                  : 36
+TRUE                 : 32
+UNARY                : 
+VOID                 : 26
+WHILE                : 56
+WHITESPACE           : 
+error                : 
+{                    : 1 12 49 50 50 55 56
+}                    : 1 12 49 50 50 55 56
+
+Nonterminals, with rules where they appear
+
+CHAR                 : 24
+atom                 : 46
+binary_expr          : 48
+condition            : 5 55 56
+datatype             : 12 20
+expression           : 6 34 35 36 37 38 39 40 41 42 43 44 45 49 50 55 55
+forLoop              : 53
+function_body        : 12
+function_calls       : 4
+function_declaration : 10 11
+function_declarations : 1 11
+function_name        : 12 14 15
+loop                 : 51 52
+loops                : 7 52
+parameter            : 18 19
+parameterList        : 17 19
+parameters           : 15
+paren_expr           : 47
+programStart         : 0
+statement            : 2 3
+statements           : 1 3 13 49 50 50 55 56
+variable             : 8 31 35 36 37 38 39 40 41 42 43 44 45
+whileLoop            : 54
+
