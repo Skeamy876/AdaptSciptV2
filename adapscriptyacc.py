@@ -2,6 +2,7 @@
 
 import ply.yacc as yacc
 from adapscriptlexer import tokens
+from Node import*
 
 precedence = (
     ('nonassoc','GE', 'LE', 'EQ', 'NE', 'GT', 'LT', 'OR'),
@@ -17,12 +18,13 @@ def p_program(p):
 
 def p_programStart(p):
     '''programStart : FUNC INIT "(" ")" "{" statements "}" '''
-    p[0] = p[6]
     
 def p_statements(p):
     '''statements : statement
-                  | statements statement'''
-  
+                | statements statement
+                '''
+    
+                 
 def p_statement(p):
     '''statement : function_calls
                 | condition
@@ -100,26 +102,11 @@ def p_binary_expr(p):
                     | atoms LT expression
                     | UNARY atoms
                     | atoms UNARY'''
+        p[0] = BinOpNode(p[2], p[1], p[3])
                     
 def p_assignment(p):    
         '''assignment : datatype IDENTIFIER EQUAL expression 
                       | datatype IDENTIFIER EQUAL ACCEPT "(" ")" '''
-        if len(p) == 5:   
-                if (p[1] == 'INT' and isinstance(p[4], int)) or \
-                        (p[1] == 'FLOAT' and isinstance(p[4], float)) or \
-                        (p[1] == 'STRING' and isinstance(p[4], str)):
-                        p[0] = p[4]
-                else:
-                   print("Type error: Type of the expression doesn't match the variable type")
-        else:
-                # Assignment from user input
-                user_input = input()
-                if p[1] == 'INT':
-                        p[0] = int(user_input)
-                elif p[1] == 'FLOAT':
-                        p[0] = float(user_input)
-                elif p[1] == 'STRING':
-                        p[0] = user_input
 
 def p_condition(p):
         '''condition : IF expression "{" statements "}"
@@ -151,9 +138,10 @@ try:
     input = open("input3.txt", "r") 
 except EOFError:
     print("End of file Error")
-
-    
 result = parser.parse(input.read())
+
+
+
 if result is not None:
         print(result)    
     
