@@ -10,7 +10,7 @@ Grammar
 
 Rule 0     S' -> program
 Rule 1     program -> programStart
-Rule 2     programStart -> INIT ( ) { statements }
+Rule 2     programStart -> FUNC INIT ( ) { statements }
 Rule 3     statements -> statement
 Rule 4     statements -> statements statement
 Rule 5     statement -> function_calls
@@ -89,7 +89,7 @@ EQUAL                : 51 52
 FLOAT                : 25
 FLOAT_VALUE          : 33
 FOR                  : 59
-FUNC                 : 14
+FUNC                 : 2 14
 GE                   : 44
 GT                   : 47
 IDENTIFIER           : 14 16 17 18 19 23 36 51 52
@@ -147,9 +147,9 @@ state 0
 
     (0) S' -> . program
     (1) program -> . programStart
-    (2) programStart -> . INIT ( ) { statements }
+    (2) programStart -> . FUNC INIT ( ) { statements }
 
-    INIT            shift and go to state 3
+    FUNC            shift and go to state 3
 
     program                        shift and go to state 1
     programStart                   shift and go to state 2
@@ -169,28 +169,35 @@ state 2
 
 state 3
 
-    (2) programStart -> INIT . ( ) { statements }
+    (2) programStart -> FUNC . INIT ( ) { statements }
 
-    (               shift and go to state 4
+    INIT            shift and go to state 4
 
 
 state 4
 
-    (2) programStart -> INIT ( . ) { statements }
+    (2) programStart -> FUNC INIT . ( ) { statements }
 
-    )               shift and go to state 5
+    (               shift and go to state 5
 
 
 state 5
 
-    (2) programStart -> INIT ( ) . { statements }
+    (2) programStart -> FUNC INIT ( . ) { statements }
 
-    {               shift and go to state 6
+    )               shift and go to state 6
 
 
 state 6
 
-    (2) programStart -> INIT ( ) { . statements }
+    (2) programStart -> FUNC INIT ( ) . { statements }
+
+    {               shift and go to state 7
+
+
+state 7
+
+    (2) programStart -> FUNC INIT ( ) { . statements }
     (3) statements -> . statement
     (4) statements -> . statements statement
     (5) statement -> . function_calls
@@ -245,43 +252,50 @@ state 6
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    statements                     shift and go to state 8
-    statement                      shift and go to state 9
-    function_calls                 shift and go to state 10
-    condition                      shift and go to state 11
-    function_declarations          shift and go to state 12
-    expression                     shift and go to state 13
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    statements                     shift and go to state 10
+    statement                      shift and go to state 11
+    function_calls                 shift and go to state 12
+    condition                      shift and go to state 13
+    function_declarations          shift and go to state 14
+    expression                     shift and go to state 15
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
-state 7
+state 8
+
+    (14) function_declaration -> FUNC . IDENTIFIER ( ) : datatype { function_body }
+
+    IDENTIFIER      shift and go to state 42
+
+
+state 9
 
     (37) paren_expr -> ( . expression )
     (29) expression -> . atoms
@@ -307,22 +321,22 @@ state 7
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    expression                     shift and go to state 41
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    expression                     shift and go to state 43
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 8
+state 10
 
-    (2) programStart -> INIT ( ) { statements . }
+    (2) programStart -> FUNC INIT ( ) { statements . }
     (4) statements -> statements . statement
     (5) statement -> . function_calls
     (6) statement -> . condition
@@ -376,43 +390,43 @@ state 8
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    }               shift and go to state 43
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    }               shift and go to state 45
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    statement                      shift and go to state 44
-    function_calls                 shift and go to state 10
-    condition                      shift and go to state 11
-    function_declarations          shift and go to state 12
-    expression                     shift and go to state 13
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    statement                      shift and go to state 46
+    function_calls                 shift and go to state 12
+    condition                      shift and go to state 13
+    function_declarations          shift and go to state 14
+    expression                     shift and go to state 15
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
-state 9
+state 11
 
     (3) statements -> statement .
 
@@ -436,7 +450,7 @@ state 9
     WHILE           reduce using rule 3 (statements -> statement .)
 
 
-state 10
+state 12
 
     (5) statement -> function_calls .
 
@@ -460,7 +474,7 @@ state 10
     WHILE           reduce using rule 5 (statement -> function_calls .)
 
 
-state 11
+state 13
 
     (6) statement -> condition .
 
@@ -484,7 +498,7 @@ state 11
     WHILE           reduce using rule 6 (statement -> condition .)
 
 
-state 12
+state 14
 
     (7) statement -> function_declarations .
 
@@ -508,7 +522,7 @@ state 12
     WHILE           reduce using rule 7 (statement -> function_declarations .)
 
 
-state 13
+state 15
 
     (8) statement -> expression .
 
@@ -532,7 +546,7 @@ state 13
     WHILE           reduce using rule 8 (statement -> expression .)
 
 
-state 14
+state 16
 
     (9) statement -> loops .
 
@@ -556,7 +570,7 @@ state 14
     WHILE           reduce using rule 9 (statement -> loops .)
 
 
-state 15
+state 17
 
     (10) statement -> RETURN . expression
     (29) expression -> . atoms
@@ -582,27 +596,27 @@ state 15
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    expression                     shift and go to state 45
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    expression                     shift and go to state 47
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 16
+state 18
 
     (11) statement -> PRINT . ( expression )
 
-    (               shift and go to state 46
+    (               shift and go to state 48
 
 
-state 17
+state 19
 
     (12) statement -> assignment .
 
@@ -626,7 +640,7 @@ state 17
     WHILE           reduce using rule 12 (statement -> assignment .)
 
 
-state 18
+state 20
 
     (16) function_calls -> IDENTIFIER . ( )
     (17) function_calls -> IDENTIFIER . ( ) function_calls
@@ -635,7 +649,7 @@ state 18
     (36) variable -> IDENTIFIER .
 
   ! shift/reduce conflict for ( resolved as shift
-    (               shift and go to state 47
+    (               shift and go to state 49
     ADD             reduce using rule 36 (variable -> IDENTIFIER .)
     SUB             reduce using rule 36 (variable -> IDENTIFIER .)
     MUL             reduce using rule 36 (variable -> IDENTIFIER .)
@@ -668,7 +682,7 @@ state 18
   ! (               [ reduce using rule 36 (variable -> IDENTIFIER .) ]
 
 
-state 19
+state 21
 
     (53) condition -> IF . expression { statements }
     (54) condition -> IF . expression { statements } ELSE { statements }
@@ -695,20 +709,20 @@ state 19
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    expression                     shift and go to state 48
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    expression                     shift and go to state 50
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 20
+state 22
 
     (13) function_declarations -> function_declaration .
 
@@ -732,7 +746,7 @@ state 20
     WHILE           reduce using rule 13 (function_declarations -> function_declaration .)
 
 
-state 21
+state 23
 
     (29) expression -> atoms .
     (38) binary_expr -> atoms . ADD expression
@@ -769,23 +783,23 @@ state 21
     )               reduce using rule 29 (expression -> atoms .)
     {               reduce using rule 29 (expression -> atoms .)
     ;               reduce using rule 29 (expression -> atoms .)
-    ADD             shift and go to state 49
-    SUB             shift and go to state 50
-    MUL             shift and go to state 51
-    DIV             shift and go to state 52
-    OR              shift and go to state 53
-    LE              shift and go to state 54
-    GE              shift and go to state 55
-    EQ              shift and go to state 56
-    NE              shift and go to state 57
-    GT              shift and go to state 58
-    LT              shift and go to state 59
-    UNARY           shift and go to state 60
+    ADD             shift and go to state 51
+    SUB             shift and go to state 52
+    MUL             shift and go to state 53
+    DIV             shift and go to state 54
+    OR              shift and go to state 55
+    LE              shift and go to state 56
+    GE              shift and go to state 57
+    EQ              shift and go to state 58
+    NE              shift and go to state 59
+    GT              shift and go to state 60
+    LT              shift and go to state 61
+    UNARY           shift and go to state 62
 
   ! UNARY           [ reduce using rule 29 (expression -> atoms .) ]
 
 
-state 22
+state 24
 
     (30) expression -> paren_expr .
 
@@ -812,7 +826,7 @@ state 22
     ;               reduce using rule 30 (expression -> paren_expr .)
 
 
-state 23
+state 25
 
     (31) expression -> binary_expr .
 
@@ -839,7 +853,7 @@ state 23
     ;               reduce using rule 31 (expression -> binary_expr .)
 
 
-state 24
+state 26
 
     (55) loops -> loop .
     (56) loops -> loop . loops
@@ -868,33 +882,26 @@ state 24
     STRING          reduce using rule 55 (loops -> loop .)
     ADAPT           reduce using rule 55 (loops -> loop .)
     VOID            reduce using rule 55 (loops -> loop .)
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
   ! FOR             [ reduce using rule 55 (loops -> loop .) ]
   ! WHILE           [ reduce using rule 55 (loops -> loop .) ]
 
-    loop                           shift and go to state 24
-    loops                          shift and go to state 61
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    loop                           shift and go to state 26
+    loops                          shift and go to state 63
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
-state 25
+state 27
 
     (51) assignment -> datatype . IDENTIFIER EQUAL expression
     (52) assignment -> datatype . IDENTIFIER EQUAL ACCEPT ( )
 
-    IDENTIFIER      shift and go to state 62
+    IDENTIFIER      shift and go to state 64
 
 
-state 26
-
-    (14) function_declaration -> FUNC . IDENTIFIER ( ) : datatype { function_body }
-
-    IDENTIFIER      shift and go to state 63
-
-
-state 27
+state 28
 
     (32) atoms -> INT_VALUE .
 
@@ -932,7 +939,7 @@ state 27
     ;               reduce using rule 32 (atoms -> INT_VALUE .)
 
 
-state 28
+state 29
 
     (33) atoms -> FLOAT_VALUE .
 
@@ -970,7 +977,7 @@ state 28
     ;               reduce using rule 33 (atoms -> FLOAT_VALUE .)
 
 
-state 29
+state 30
 
     (34) atoms -> STRING_VALUE .
 
@@ -1008,7 +1015,7 @@ state 29
     ;               reduce using rule 34 (atoms -> STRING_VALUE .)
 
 
-state 30
+state 31
 
     (35) atoms -> variable .
 
@@ -1046,7 +1053,7 @@ state 30
     ;               reduce using rule 35 (atoms -> variable .)
 
 
-state 31
+state 32
 
     (49) binary_expr -> UNARY . atoms
     (32) atoms -> . INT_VALUE
@@ -1055,15 +1062,15 @@ state 31
     (35) atoms -> . variable
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 64
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 65
+    variable                       shift and go to state 31
 
-state 32
+state 33
 
     (57) loop -> forLoop .
 
@@ -1087,7 +1094,7 @@ state 32
     VOID            reduce using rule 57 (loop -> forLoop .)
 
 
-state 33
+state 34
 
     (58) loop -> whileLoop .
 
@@ -1111,7 +1118,7 @@ state 33
     VOID            reduce using rule 58 (loop -> whileLoop .)
 
 
-state 34
+state 35
 
     (24) datatype -> INT .
 
@@ -1119,7 +1126,7 @@ state 34
     {               reduce using rule 24 (datatype -> INT .)
 
 
-state 35
+state 36
 
     (25) datatype -> FLOAT .
 
@@ -1127,7 +1134,7 @@ state 35
     {               reduce using rule 25 (datatype -> FLOAT .)
 
 
-state 36
+state 37
 
     (26) datatype -> STRING .
 
@@ -1135,7 +1142,7 @@ state 36
     {               reduce using rule 26 (datatype -> STRING .)
 
 
-state 37
+state 38
 
     (27) datatype -> ADAPT .
 
@@ -1143,7 +1150,7 @@ state 37
     {               reduce using rule 27 (datatype -> ADAPT .)
 
 
-state 38
+state 39
 
     (28) datatype -> VOID .
 
@@ -1151,28 +1158,35 @@ state 38
     {               reduce using rule 28 (datatype -> VOID .)
 
 
-state 39
-
-    (59) forLoop -> FOR . ( expression ; condition ; expression ) { statements }
-
-    (               shift and go to state 65
-
-
 state 40
 
-    (60) whileLoop -> WHILE . ( condition ) { statements }
+    (59) forLoop -> FOR . ( expression ; condition ; expression ) { statements }
 
     (               shift and go to state 66
 
 
 state 41
 
-    (37) paren_expr -> ( expression . )
+    (60) whileLoop -> WHILE . ( condition ) { statements }
 
-    )               shift and go to state 67
+    (               shift and go to state 67
 
 
 state 42
+
+    (14) function_declaration -> FUNC IDENTIFIER . ( ) : datatype { function_body }
+
+    (               shift and go to state 68
+
+
+state 43
+
+    (37) paren_expr -> ( expression . )
+
+    )               shift and go to state 69
+
+
+state 44
 
     (36) variable -> IDENTIFIER .
 
@@ -1210,14 +1224,14 @@ state 42
     ;               reduce using rule 36 (variable -> IDENTIFIER .)
 
 
-state 43
+state 45
 
-    (2) programStart -> INIT ( ) { statements } .
+    (2) programStart -> FUNC INIT ( ) { statements } .
 
-    $end            reduce using rule 2 (programStart -> INIT ( ) { statements } .)
+    $end            reduce using rule 2 (programStart -> FUNC INIT ( ) { statements } .)
 
 
-state 44
+state 46
 
     (4) statements -> statements statement .
 
@@ -1241,7 +1255,7 @@ state 44
     WHILE           reduce using rule 4 (statements -> statements statement .)
 
 
-state 45
+state 47
 
     (10) statement -> RETURN expression .
 
@@ -1265,7 +1279,7 @@ state 45
     WHILE           reduce using rule 10 (statement -> RETURN expression .)
 
 
-state 46
+state 48
 
     (11) statement -> PRINT ( . expression )
     (29) expression -> . atoms
@@ -1291,20 +1305,20 @@ state 46
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    expression                     shift and go to state 68
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    expression                     shift and go to state 70
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 47
+state 49
 
     (16) function_calls -> IDENTIFIER ( . )
     (17) function_calls -> IDENTIFIER ( . ) function_calls
@@ -1320,27 +1334,27 @@ state 47
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
 
-    )               shift and go to state 69
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
+    )               shift and go to state 71
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
 
-    parameters                     shift and go to state 70
-    parameterList                  shift and go to state 71
-    parameter                      shift and go to state 72
-    datatype                       shift and go to state 73
+    parameters                     shift and go to state 72
+    parameterList                  shift and go to state 73
+    parameter                      shift and go to state 74
+    datatype                       shift and go to state 75
 
-state 48
+state 50
 
     (53) condition -> IF expression . { statements }
     (54) condition -> IF expression . { statements } ELSE { statements }
 
-    {               shift and go to state 74
+    {               shift and go to state 76
 
 
-state 49
+state 51
 
     (38) binary_expr -> atoms ADD . expression
     (29) expression -> . atoms
@@ -1366,20 +1380,20 @@ state 49
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 75
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 77
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 50
+state 52
 
     (39) binary_expr -> atoms SUB . expression
     (29) expression -> . atoms
@@ -1405,20 +1419,20 @@ state 50
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 76
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 78
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 51
+state 53
 
     (40) binary_expr -> atoms MUL . expression
     (29) expression -> . atoms
@@ -1444,20 +1458,20 @@ state 51
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 77
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 79
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 52
+state 54
 
     (41) binary_expr -> atoms DIV . expression
     (29) expression -> . atoms
@@ -1483,20 +1497,20 @@ state 52
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 78
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 80
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 53
+state 55
 
     (42) binary_expr -> atoms OR . expression
     (29) expression -> . atoms
@@ -1522,20 +1536,20 @@ state 53
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 79
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 81
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 54
+state 56
 
     (43) binary_expr -> atoms LE . expression
     (29) expression -> . atoms
@@ -1561,20 +1575,20 @@ state 54
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 80
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 82
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 55
+state 57
 
     (44) binary_expr -> atoms GE . expression
     (29) expression -> . atoms
@@ -1600,20 +1614,20 @@ state 55
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 81
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 83
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 56
+state 58
 
     (45) binary_expr -> atoms EQ . expression
     (29) expression -> . atoms
@@ -1639,20 +1653,20 @@ state 56
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 82
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 84
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 57
+state 59
 
     (46) binary_expr -> atoms NE . expression
     (29) expression -> . atoms
@@ -1678,20 +1692,20 @@ state 57
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 83
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 85
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 58
+state 60
 
     (47) binary_expr -> atoms GT . expression
     (29) expression -> . atoms
@@ -1717,20 +1731,20 @@ state 58
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 84
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 86
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 59
+state 61
 
     (48) binary_expr -> atoms LT . expression
     (29) expression -> . atoms
@@ -1756,20 +1770,20 @@ state 59
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    atoms                          shift and go to state 21
-    expression                     shift and go to state 85
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    atoms                          shift and go to state 23
+    expression                     shift and go to state 87
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 60
+state 62
 
     (50) binary_expr -> atoms UNARY .
 
@@ -1796,7 +1810,7 @@ state 60
     ;               reduce using rule 50 (binary_expr -> atoms UNARY .)
 
 
-state 61
+state 63
 
     (56) loops -> loop loops .
 
@@ -1820,22 +1834,15 @@ state 61
     WHILE           reduce using rule 56 (loops -> loop loops .)
 
 
-state 62
+state 64
 
     (51) assignment -> datatype IDENTIFIER . EQUAL expression
     (52) assignment -> datatype IDENTIFIER . EQUAL ACCEPT ( )
 
-    EQUAL           shift and go to state 86
+    EQUAL           shift and go to state 88
 
 
-state 63
-
-    (14) function_declaration -> FUNC IDENTIFIER . ( ) : datatype { function_body }
-
-    (               shift and go to state 87
-
-
-state 64
+state 65
 
     (49) binary_expr -> UNARY atoms .
 
@@ -1862,7 +1869,7 @@ state 64
     ;               reduce using rule 49 (binary_expr -> UNARY atoms .)
 
 
-state 65
+state 66
 
     (59) forLoop -> FOR ( . expression ; condition ; expression ) { statements }
     (29) expression -> . atoms
@@ -1888,30 +1895,37 @@ state 65
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    expression                     shift and go to state 88
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    expression                     shift and go to state 89
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 66
+state 67
 
     (60) whileLoop -> WHILE ( . condition ) { statements }
     (53) condition -> . IF expression { statements }
     (54) condition -> . IF expression { statements } ELSE { statements }
 
-    IF              shift and go to state 19
+    IF              shift and go to state 21
 
-    condition                      shift and go to state 89
+    condition                      shift and go to state 90
 
-state 67
+state 68
+
+    (14) function_declaration -> FUNC IDENTIFIER ( . ) : datatype { function_body }
+
+    )               shift and go to state 91
+
+
+state 69
 
     (37) paren_expr -> ( expression ) .
 
@@ -1938,14 +1952,14 @@ state 67
     ;               reduce using rule 37 (paren_expr -> ( expression ) .)
 
 
-state 68
+state 70
 
     (11) statement -> PRINT ( expression . )
 
-    )               shift and go to state 90
+    )               shift and go to state 92
 
 
-state 69
+state 71
 
     (16) function_calls -> IDENTIFIER ( ) .
     (17) function_calls -> IDENTIFIER ( ) . function_calls
@@ -1972,44 +1986,44 @@ state 69
     VOID            reduce using rule 16 (function_calls -> IDENTIFIER ( ) .)
     FOR             reduce using rule 16 (function_calls -> IDENTIFIER ( ) .)
     WHILE           reduce using rule 16 (function_calls -> IDENTIFIER ( ) .)
-    IDENTIFIER      shift and go to state 91
+    IDENTIFIER      shift and go to state 93
 
   ! IDENTIFIER      [ reduce using rule 16 (function_calls -> IDENTIFIER ( ) .) ]
 
-    function_calls                 shift and go to state 92
+    function_calls                 shift and go to state 94
 
-state 70
+state 72
 
     (18) function_calls -> IDENTIFIER ( parameters . )
     (19) function_calls -> IDENTIFIER ( parameters . ) function_calls
 
-    )               shift and go to state 93
+    )               shift and go to state 95
 
 
-state 71
+state 73
 
     (20) parameters -> parameterList .
 
     )               reduce using rule 20 (parameters -> parameterList .)
 
 
-state 72
+state 74
 
     (21) parameterList -> parameter .
     (22) parameterList -> parameter . , parameterList
 
     )               reduce using rule 21 (parameterList -> parameter .)
-    ,               shift and go to state 94
+    ,               shift and go to state 96
 
 
-state 73
+state 75
 
     (23) parameter -> datatype . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 95
+    IDENTIFIER      shift and go to state 97
 
 
-state 74
+state 76
 
     (53) condition -> IF expression { . statements }
     (54) condition -> IF expression { . statements } ELSE { statements }
@@ -2067,43 +2081,43 @@ state 74
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    expression                     shift and go to state 13
-    statements                     shift and go to state 96
-    statement                      shift and go to state 9
-    function_calls                 shift and go to state 10
-    condition                      shift and go to state 11
-    function_declarations          shift and go to state 12
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    expression                     shift and go to state 15
+    statements                     shift and go to state 98
+    statement                      shift and go to state 11
+    function_calls                 shift and go to state 12
+    condition                      shift and go to state 13
+    function_declarations          shift and go to state 14
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
-state 75
+state 77
 
     (38) binary_expr -> atoms ADD expression .
 
@@ -2130,7 +2144,7 @@ state 75
     ;               reduce using rule 38 (binary_expr -> atoms ADD expression .)
 
 
-state 76
+state 78
 
     (39) binary_expr -> atoms SUB expression .
 
@@ -2157,7 +2171,7 @@ state 76
     ;               reduce using rule 39 (binary_expr -> atoms SUB expression .)
 
 
-state 77
+state 79
 
     (40) binary_expr -> atoms MUL expression .
 
@@ -2184,7 +2198,7 @@ state 77
     ;               reduce using rule 40 (binary_expr -> atoms MUL expression .)
 
 
-state 78
+state 80
 
     (41) binary_expr -> atoms DIV expression .
 
@@ -2211,7 +2225,7 @@ state 78
     ;               reduce using rule 41 (binary_expr -> atoms DIV expression .)
 
 
-state 79
+state 81
 
     (42) binary_expr -> atoms OR expression .
 
@@ -2238,7 +2252,7 @@ state 79
     ;               reduce using rule 42 (binary_expr -> atoms OR expression .)
 
 
-state 80
+state 82
 
     (43) binary_expr -> atoms LE expression .
 
@@ -2265,7 +2279,7 @@ state 80
     ;               reduce using rule 43 (binary_expr -> atoms LE expression .)
 
 
-state 81
+state 83
 
     (44) binary_expr -> atoms GE expression .
 
@@ -2292,7 +2306,7 @@ state 81
     ;               reduce using rule 44 (binary_expr -> atoms GE expression .)
 
 
-state 82
+state 84
 
     (45) binary_expr -> atoms EQ expression .
 
@@ -2319,7 +2333,7 @@ state 82
     ;               reduce using rule 45 (binary_expr -> atoms EQ expression .)
 
 
-state 83
+state 85
 
     (46) binary_expr -> atoms NE expression .
 
@@ -2346,7 +2360,7 @@ state 83
     ;               reduce using rule 46 (binary_expr -> atoms NE expression .)
 
 
-state 84
+state 86
 
     (47) binary_expr -> atoms GT expression .
 
@@ -2373,7 +2387,7 @@ state 84
     ;               reduce using rule 47 (binary_expr -> atoms GT expression .)
 
 
-state 85
+state 87
 
     (48) binary_expr -> atoms LT expression .
 
@@ -2400,7 +2414,7 @@ state 85
     ;               reduce using rule 48 (binary_expr -> atoms LT expression .)
 
 
-state 86
+state 88
 
     (51) assignment -> datatype IDENTIFIER EQUAL . expression
     (52) assignment -> datatype IDENTIFIER EQUAL . ACCEPT ( )
@@ -2427,42 +2441,42 @@ state 86
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    ACCEPT          shift and go to state 98
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    ACCEPT          shift and go to state 100
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    expression                     shift and go to state 97
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
-
-state 87
-
-    (14) function_declaration -> FUNC IDENTIFIER ( . ) : datatype { function_body }
-
-    )               shift and go to state 99
-
-
-state 88
-
-    (59) forLoop -> FOR ( expression . ; condition ; expression ) { statements }
-
-    ;               shift and go to state 100
-
+    expression                     shift and go to state 99
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
 state 89
 
-    (60) whileLoop -> WHILE ( condition . ) { statements }
+    (59) forLoop -> FOR ( expression . ; condition ; expression ) { statements }
 
-    )               shift and go to state 101
+    ;               shift and go to state 101
 
 
 state 90
+
+    (60) whileLoop -> WHILE ( condition . ) { statements }
+
+    )               shift and go to state 102
+
+
+state 91
+
+    (14) function_declaration -> FUNC IDENTIFIER ( ) . : datatype { function_body }
+
+    :               shift and go to state 103
+
+
+state 92
 
     (11) statement -> PRINT ( expression ) .
 
@@ -2486,17 +2500,17 @@ state 90
     WHILE           reduce using rule 11 (statement -> PRINT ( expression ) .)
 
 
-state 91
+state 93
 
     (16) function_calls -> IDENTIFIER . ( )
     (17) function_calls -> IDENTIFIER . ( ) function_calls
     (18) function_calls -> IDENTIFIER . ( parameters )
     (19) function_calls -> IDENTIFIER . ( parameters ) function_calls
 
-    (               shift and go to state 47
+    (               shift and go to state 49
 
 
-state 92
+state 94
 
     (17) function_calls -> IDENTIFIER ( ) function_calls .
 
@@ -2520,7 +2534,7 @@ state 92
     WHILE           reduce using rule 17 (function_calls -> IDENTIFIER ( ) function_calls .)
 
 
-state 93
+state 95
 
     (18) function_calls -> IDENTIFIER ( parameters ) .
     (19) function_calls -> IDENTIFIER ( parameters ) . function_calls
@@ -2547,13 +2561,13 @@ state 93
     VOID            reduce using rule 18 (function_calls -> IDENTIFIER ( parameters ) .)
     FOR             reduce using rule 18 (function_calls -> IDENTIFIER ( parameters ) .)
     WHILE           reduce using rule 18 (function_calls -> IDENTIFIER ( parameters ) .)
-    IDENTIFIER      shift and go to state 91
+    IDENTIFIER      shift and go to state 93
 
   ! IDENTIFIER      [ reduce using rule 18 (function_calls -> IDENTIFIER ( parameters ) .) ]
 
-    function_calls                 shift and go to state 102
+    function_calls                 shift and go to state 104
 
-state 94
+state 96
 
     (22) parameterList -> parameter , . parameterList
     (21) parameterList -> . parameter
@@ -2565,17 +2579,17 @@ state 94
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
 
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
 
-    parameter                      shift and go to state 72
-    parameterList                  shift and go to state 103
-    datatype                       shift and go to state 73
+    parameter                      shift and go to state 74
+    parameterList                  shift and go to state 105
+    datatype                       shift and go to state 75
 
-state 95
+state 97
 
     (23) parameter -> datatype IDENTIFIER .
 
@@ -2583,7 +2597,7 @@ state 95
     )               reduce using rule 23 (parameter -> datatype IDENTIFIER .)
 
 
-state 96
+state 98
 
     (53) condition -> IF expression { statements . }
     (54) condition -> IF expression { statements . } ELSE { statements }
@@ -2640,43 +2654,43 @@ state 96
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    }               shift and go to state 104
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    }               shift and go to state 106
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    expression                     shift and go to state 13
-    statement                      shift and go to state 44
-    function_calls                 shift and go to state 10
-    condition                      shift and go to state 11
-    function_declarations          shift and go to state 12
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    expression                     shift and go to state 15
+    statement                      shift and go to state 46
+    function_calls                 shift and go to state 12
+    condition                      shift and go to state 13
+    function_declarations          shift and go to state 14
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
-state 97
+state 99
 
     (51) assignment -> datatype IDENTIFIER EQUAL expression .
 
@@ -2700,38 +2714,48 @@ state 97
     WHILE           reduce using rule 51 (assignment -> datatype IDENTIFIER EQUAL expression .)
 
 
-state 98
+state 100
 
     (52) assignment -> datatype IDENTIFIER EQUAL ACCEPT . ( )
 
-    (               shift and go to state 105
+    (               shift and go to state 107
 
 
-state 99
-
-    (14) function_declaration -> FUNC IDENTIFIER ( ) . : datatype { function_body }
-
-    :               shift and go to state 106
-
-
-state 100
+state 101
 
     (59) forLoop -> FOR ( expression ; . condition ; expression ) { statements }
     (53) condition -> . IF expression { statements }
     (54) condition -> . IF expression { statements } ELSE { statements }
 
-    IF              shift and go to state 19
+    IF              shift and go to state 21
 
-    condition                      shift and go to state 107
+    condition                      shift and go to state 108
 
-state 101
+state 102
 
     (60) whileLoop -> WHILE ( condition ) . { statements }
 
-    {               shift and go to state 108
+    {               shift and go to state 109
 
 
-state 102
+state 103
+
+    (14) function_declaration -> FUNC IDENTIFIER ( ) : . datatype { function_body }
+    (24) datatype -> . INT
+    (25) datatype -> . FLOAT
+    (26) datatype -> . STRING
+    (27) datatype -> . ADAPT
+    (28) datatype -> . VOID
+
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+
+    datatype                       shift and go to state 110
+
+state 104
 
     (19) function_calls -> IDENTIFIER ( parameters ) function_calls .
 
@@ -2755,14 +2779,14 @@ state 102
     WHILE           reduce using rule 19 (function_calls -> IDENTIFIER ( parameters ) function_calls .)
 
 
-state 103
+state 105
 
     (22) parameterList -> parameter , parameterList .
 
     )               reduce using rule 22 (parameterList -> parameter , parameterList .)
 
 
-state 104
+state 106
 
     (53) condition -> IF expression { statements } .
     (54) condition -> IF expression { statements } . ELSE { statements }
@@ -2787,41 +2811,24 @@ state 104
     WHILE           reduce using rule 53 (condition -> IF expression { statements } .)
     )               reduce using rule 53 (condition -> IF expression { statements } .)
     ;               reduce using rule 53 (condition -> IF expression { statements } .)
-    ELSE            shift and go to state 109
+    ELSE            shift and go to state 111
 
-
-state 105
-
-    (52) assignment -> datatype IDENTIFIER EQUAL ACCEPT ( . )
-
-    )               shift and go to state 110
-
-
-state 106
-
-    (14) function_declaration -> FUNC IDENTIFIER ( ) : . datatype { function_body }
-    (24) datatype -> . INT
-    (25) datatype -> . FLOAT
-    (26) datatype -> . STRING
-    (27) datatype -> . ADAPT
-    (28) datatype -> . VOID
-
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-
-    datatype                       shift and go to state 111
 
 state 107
 
-    (59) forLoop -> FOR ( expression ; condition . ; expression ) { statements }
+    (52) assignment -> datatype IDENTIFIER EQUAL ACCEPT ( . )
 
-    ;               shift and go to state 112
+    )               shift and go to state 112
 
 
 state 108
+
+    (59) forLoop -> FOR ( expression ; condition . ; expression ) { statements }
+
+    ;               shift and go to state 113
+
+
+state 109
 
     (60) whileLoop -> WHILE ( condition ) { . statements }
     (3) statements -> . statement
@@ -2878,50 +2885,57 @@ state 108
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    condition                      shift and go to state 11
-    statements                     shift and go to state 113
-    statement                      shift and go to state 9
-    function_calls                 shift and go to state 10
-    function_declarations          shift and go to state 12
-    expression                     shift and go to state 13
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    condition                      shift and go to state 13
+    statements                     shift and go to state 114
+    statement                      shift and go to state 11
+    function_calls                 shift and go to state 12
+    function_declarations          shift and go to state 14
+    expression                     shift and go to state 15
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
-state 109
+state 110
+
+    (14) function_declaration -> FUNC IDENTIFIER ( ) : datatype . { function_body }
+
+    {               shift and go to state 115
+
+
+state 111
 
     (54) condition -> IF expression { statements } ELSE . { statements }
 
-    {               shift and go to state 114
+    {               shift and go to state 116
 
 
-state 110
+state 112
 
     (52) assignment -> datatype IDENTIFIER EQUAL ACCEPT ( ) .
 
@@ -2945,14 +2959,7 @@ state 110
     WHILE           reduce using rule 52 (assignment -> datatype IDENTIFIER EQUAL ACCEPT ( ) .)
 
 
-state 111
-
-    (14) function_declaration -> FUNC IDENTIFIER ( ) : datatype . { function_body }
-
-    {               shift and go to state 115
-
-
-state 112
+state 113
 
     (59) forLoop -> FOR ( expression ; condition ; . expression ) { statements }
     (29) expression -> . atoms
@@ -2978,20 +2985,20 @@ state 112
     (50) binary_expr -> . atoms UNARY
     (36) variable -> . IDENTIFIER
 
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    IDENTIFIER      shift and go to state 42
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
 
-    expression                     shift and go to state 116
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    variable                       shift and go to state 30
+    expression                     shift and go to state 117
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
 
-state 113
+state 114
 
     (60) whileLoop -> WHILE ( condition ) { statements . }
     (4) statements -> statements . statement
@@ -3047,134 +3054,41 @@ state 113
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    }               shift and go to state 117
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    }               shift and go to state 118
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    condition                      shift and go to state 11
-    statement                      shift and go to state 44
-    function_calls                 shift and go to state 10
-    function_declarations          shift and go to state 12
-    expression                     shift and go to state 13
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
-
-state 114
-
-    (54) condition -> IF expression { statements } ELSE { . statements }
-    (3) statements -> . statement
-    (4) statements -> . statements statement
-    (5) statement -> . function_calls
-    (6) statement -> . condition
-    (7) statement -> . function_declarations
-    (8) statement -> . expression
-    (9) statement -> . loops
-    (10) statement -> . RETURN expression
-    (11) statement -> . PRINT ( expression )
-    (12) statement -> . assignment
-    (16) function_calls -> . IDENTIFIER ( )
-    (17) function_calls -> . IDENTIFIER ( ) function_calls
-    (18) function_calls -> . IDENTIFIER ( parameters )
-    (19) function_calls -> . IDENTIFIER ( parameters ) function_calls
-    (53) condition -> . IF expression { statements }
-    (54) condition -> . IF expression { statements } ELSE { statements }
-    (13) function_declarations -> . function_declaration
-    (29) expression -> . atoms
-    (30) expression -> . paren_expr
-    (31) expression -> . binary_expr
-    (55) loops -> . loop
-    (56) loops -> . loop loops
-    (51) assignment -> . datatype IDENTIFIER EQUAL expression
-    (52) assignment -> . datatype IDENTIFIER EQUAL ACCEPT ( )
-    (14) function_declaration -> . FUNC IDENTIFIER ( ) : datatype { function_body }
-    (32) atoms -> . INT_VALUE
-    (33) atoms -> . FLOAT_VALUE
-    (34) atoms -> . STRING_VALUE
-    (35) atoms -> . variable
-    (37) paren_expr -> . ( expression )
-    (38) binary_expr -> . atoms ADD expression
-    (39) binary_expr -> . atoms SUB expression
-    (40) binary_expr -> . atoms MUL expression
-    (41) binary_expr -> . atoms DIV expression
-    (42) binary_expr -> . atoms OR expression
-    (43) binary_expr -> . atoms LE expression
-    (44) binary_expr -> . atoms GE expression
-    (45) binary_expr -> . atoms EQ expression
-    (46) binary_expr -> . atoms NE expression
-    (47) binary_expr -> . atoms GT expression
-    (48) binary_expr -> . atoms LT expression
-    (49) binary_expr -> . UNARY atoms
-    (50) binary_expr -> . atoms UNARY
-    (57) loop -> . forLoop
-    (58) loop -> . whileLoop
-    (24) datatype -> . INT
-    (25) datatype -> . FLOAT
-    (26) datatype -> . STRING
-    (27) datatype -> . ADAPT
-    (28) datatype -> . VOID
-    (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
-    (60) whileLoop -> . WHILE ( condition ) { statements }
-
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
-
-    expression                     shift and go to state 13
-    statements                     shift and go to state 118
-    statement                      shift and go to state 9
-    function_calls                 shift and go to state 10
-    condition                      shift and go to state 11
-    function_declarations          shift and go to state 12
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    condition                      shift and go to state 13
+    statement                      shift and go to state 46
+    function_calls                 shift and go to state 12
+    function_declarations          shift and go to state 14
+    expression                     shift and go to state 15
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
 state 115
 
@@ -3234,78 +3148,48 @@ state 115
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    datatype                       shift and go to state 25
+    datatype                       shift and go to state 27
     function_body                  shift and go to state 119
     statements                     shift and go to state 120
-    statement                      shift and go to state 9
-    function_calls                 shift and go to state 10
-    condition                      shift and go to state 11
-    function_declarations          shift and go to state 12
-    expression                     shift and go to state 13
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    statement                      shift and go to state 11
+    function_calls                 shift and go to state 12
+    condition                      shift and go to state 13
+    function_declarations          shift and go to state 14
+    expression                     shift and go to state 15
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
 state 116
 
-    (59) forLoop -> FOR ( expression ; condition ; expression . ) { statements }
-
-    )               shift and go to state 121
-
-
-state 117
-
-    (60) whileLoop -> WHILE ( condition ) { statements } .
-
-    FOR             reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    WHILE           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    }               reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    RETURN          reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    PRINT           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    IDENTIFIER      reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    IF              reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    FUNC            reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    INT_VALUE       reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    FLOAT_VALUE     reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    STRING_VALUE    reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    (               reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    UNARY           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    INT             reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    FLOAT           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    STRING          reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    ADAPT           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-    VOID            reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
-
-
-state 118
-
-    (54) condition -> IF expression { statements } ELSE { statements . }
-    (4) statements -> statements . statement
+    (54) condition -> IF expression { statements } ELSE { . statements }
+    (3) statements -> . statement
+    (4) statements -> . statements statement
     (5) statement -> . function_calls
     (6) statement -> . condition
     (7) statement -> . function_declarations
@@ -3358,41 +3242,72 @@ state 118
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    }               shift and go to state 122
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    expression                     shift and go to state 13
-    statement                      shift and go to state 44
-    function_calls                 shift and go to state 10
-    condition                      shift and go to state 11
-    function_declarations          shift and go to state 12
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    expression                     shift and go to state 15
+    statements                     shift and go to state 121
+    statement                      shift and go to state 11
+    function_calls                 shift and go to state 12
+    condition                      shift and go to state 13
+    function_declarations          shift and go to state 14
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
+
+state 117
+
+    (59) forLoop -> FOR ( expression ; condition ; expression . ) { statements }
+
+    )               shift and go to state 122
+
+
+state 118
+
+    (60) whileLoop -> WHILE ( condition ) { statements } .
+
+    FOR             reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    WHILE           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    }               reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    RETURN          reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    PRINT           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    IDENTIFIER      reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    IF              reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    FUNC            reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    INT_VALUE       reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    FLOAT_VALUE     reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    STRING_VALUE    reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    (               reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    UNARY           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    INT             reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    FLOAT           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    STRING          reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    ADAPT           reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+    VOID            reduce using rule 60 (whileLoop -> WHILE ( condition ) { statements } .)
+
 
 state 119
 
@@ -3458,72 +3373,138 @@ state 120
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     }               reduce using rule 15 (function_body -> statements .)
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    statement                      shift and go to state 44
-    function_calls                 shift and go to state 10
-    condition                      shift and go to state 11
-    function_declarations          shift and go to state 12
-    expression                     shift and go to state 13
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    statement                      shift and go to state 46
+    function_calls                 shift and go to state 12
+    condition                      shift and go to state 13
+    function_declarations          shift and go to state 14
+    expression                     shift and go to state 15
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
 state 121
 
-    (59) forLoop -> FOR ( expression ; condition ; expression ) . { statements }
+    (54) condition -> IF expression { statements } ELSE { statements . }
+    (4) statements -> statements . statement
+    (5) statement -> . function_calls
+    (6) statement -> . condition
+    (7) statement -> . function_declarations
+    (8) statement -> . expression
+    (9) statement -> . loops
+    (10) statement -> . RETURN expression
+    (11) statement -> . PRINT ( expression )
+    (12) statement -> . assignment
+    (16) function_calls -> . IDENTIFIER ( )
+    (17) function_calls -> . IDENTIFIER ( ) function_calls
+    (18) function_calls -> . IDENTIFIER ( parameters )
+    (19) function_calls -> . IDENTIFIER ( parameters ) function_calls
+    (53) condition -> . IF expression { statements }
+    (54) condition -> . IF expression { statements } ELSE { statements }
+    (13) function_declarations -> . function_declaration
+    (29) expression -> . atoms
+    (30) expression -> . paren_expr
+    (31) expression -> . binary_expr
+    (55) loops -> . loop
+    (56) loops -> . loop loops
+    (51) assignment -> . datatype IDENTIFIER EQUAL expression
+    (52) assignment -> . datatype IDENTIFIER EQUAL ACCEPT ( )
+    (14) function_declaration -> . FUNC IDENTIFIER ( ) : datatype { function_body }
+    (32) atoms -> . INT_VALUE
+    (33) atoms -> . FLOAT_VALUE
+    (34) atoms -> . STRING_VALUE
+    (35) atoms -> . variable
+    (37) paren_expr -> . ( expression )
+    (38) binary_expr -> . atoms ADD expression
+    (39) binary_expr -> . atoms SUB expression
+    (40) binary_expr -> . atoms MUL expression
+    (41) binary_expr -> . atoms DIV expression
+    (42) binary_expr -> . atoms OR expression
+    (43) binary_expr -> . atoms LE expression
+    (44) binary_expr -> . atoms GE expression
+    (45) binary_expr -> . atoms EQ expression
+    (46) binary_expr -> . atoms NE expression
+    (47) binary_expr -> . atoms GT expression
+    (48) binary_expr -> . atoms LT expression
+    (49) binary_expr -> . UNARY atoms
+    (50) binary_expr -> . atoms UNARY
+    (57) loop -> . forLoop
+    (58) loop -> . whileLoop
+    (24) datatype -> . INT
+    (25) datatype -> . FLOAT
+    (26) datatype -> . STRING
+    (27) datatype -> . ADAPT
+    (28) datatype -> . VOID
+    (36) variable -> . IDENTIFIER
+    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    {               shift and go to state 124
+    }               shift and go to state 124
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
+    expression                     shift and go to state 15
+    statement                      shift and go to state 46
+    function_calls                 shift and go to state 12
+    condition                      shift and go to state 13
+    function_declarations          shift and go to state 14
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
 state 122
 
-    (54) condition -> IF expression { statements } ELSE { statements } .
+    (59) forLoop -> FOR ( expression ; condition ; expression ) . { statements }
 
-    }               reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    RETURN          reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    PRINT           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    IDENTIFIER      reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    IF              reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    FUNC            reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    INT_VALUE       reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    FLOAT_VALUE     reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    STRING_VALUE    reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    (               reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    UNARY           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    INT             reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    FLOAT           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    STRING          reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    ADAPT           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    VOID            reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    FOR             reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    WHILE           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    )               reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
-    ;               reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    {               shift and go to state 125
 
 
 state 123
@@ -3551,6 +3532,32 @@ state 123
 
 
 state 124
+
+    (54) condition -> IF expression { statements } ELSE { statements } .
+
+    }               reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    RETURN          reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    PRINT           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    IDENTIFIER      reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    IF              reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    FUNC            reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    INT_VALUE       reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    FLOAT_VALUE     reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    STRING_VALUE    reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    (               reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    UNARY           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    INT             reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    FLOAT           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    STRING          reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    ADAPT           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    VOID            reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    FOR             reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    WHILE           reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    )               reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+    ;               reduce using rule 54 (condition -> IF expression { statements } ELSE { statements } .)
+
+
+state 125
 
     (59) forLoop -> FOR ( expression ; condition ; expression ) { . statements }
     (3) statements -> . statement
@@ -3607,43 +3614,43 @@ state 124
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    expression                     shift and go to state 13
-    condition                      shift and go to state 11
-    statements                     shift and go to state 125
-    statement                      shift and go to state 9
-    function_calls                 shift and go to state 10
-    function_declarations          shift and go to state 12
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    expression                     shift and go to state 15
+    condition                      shift and go to state 13
+    statements                     shift and go to state 126
+    statement                      shift and go to state 11
+    function_calls                 shift and go to state 12
+    function_declarations          shift and go to state 14
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
-state 125
+state 126
 
     (59) forLoop -> FOR ( expression ; condition ; expression ) { statements . }
     (4) statements -> statements . statement
@@ -3699,43 +3706,43 @@ state 125
     (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    }               shift and go to state 126
-    RETURN          shift and go to state 15
-    PRINT           shift and go to state 16
-    IDENTIFIER      shift and go to state 18
-    IF              shift and go to state 19
-    FUNC            shift and go to state 26
-    INT_VALUE       shift and go to state 27
-    FLOAT_VALUE     shift and go to state 28
-    STRING_VALUE    shift and go to state 29
-    (               shift and go to state 7
-    UNARY           shift and go to state 31
-    INT             shift and go to state 34
-    FLOAT           shift and go to state 35
-    STRING          shift and go to state 36
-    ADAPT           shift and go to state 37
-    VOID            shift and go to state 38
-    FOR             shift and go to state 39
-    WHILE           shift and go to state 40
+    }               shift and go to state 127
+    RETURN          shift and go to state 17
+    PRINT           shift and go to state 18
+    IDENTIFIER      shift and go to state 20
+    IF              shift and go to state 21
+    FUNC            shift and go to state 8
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    INT             shift and go to state 35
+    FLOAT           shift and go to state 36
+    STRING          shift and go to state 37
+    ADAPT           shift and go to state 38
+    VOID            shift and go to state 39
+    FOR             shift and go to state 40
+    WHILE           shift and go to state 41
 
-    expression                     shift and go to state 13
-    condition                      shift and go to state 11
-    statement                      shift and go to state 44
-    function_calls                 shift and go to state 10
-    function_declarations          shift and go to state 12
-    loops                          shift and go to state 14
-    assignment                     shift and go to state 17
-    function_declaration           shift and go to state 20
-    atoms                          shift and go to state 21
-    paren_expr                     shift and go to state 22
-    binary_expr                    shift and go to state 23
-    loop                           shift and go to state 24
-    datatype                       shift and go to state 25
-    variable                       shift and go to state 30
-    forLoop                        shift and go to state 32
-    whileLoop                      shift and go to state 33
+    expression                     shift and go to state 15
+    condition                      shift and go to state 13
+    statement                      shift and go to state 46
+    function_calls                 shift and go to state 12
+    function_declarations          shift and go to state 14
+    loops                          shift and go to state 16
+    assignment                     shift and go to state 19
+    function_declaration           shift and go to state 22
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    loop                           shift and go to state 26
+    datatype                       shift and go to state 27
+    variable                       shift and go to state 31
+    forLoop                        shift and go to state 33
+    whileLoop                      shift and go to state 34
 
-state 126
+state 127
 
     (59) forLoop -> FOR ( expression ; condition ; expression ) { statements } .
 
@@ -3761,9 +3768,9 @@ state 126
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for ( in state 18 resolved as shift
-WARNING: shift/reduce conflict for UNARY in state 21 resolved as shift
-WARNING: shift/reduce conflict for FOR in state 24 resolved as shift
-WARNING: shift/reduce conflict for WHILE in state 24 resolved as shift
-WARNING: shift/reduce conflict for IDENTIFIER in state 69 resolved as shift
-WARNING: shift/reduce conflict for IDENTIFIER in state 93 resolved as shift
+WARNING: shift/reduce conflict for ( in state 20 resolved as shift
+WARNING: shift/reduce conflict for UNARY in state 23 resolved as shift
+WARNING: shift/reduce conflict for FOR in state 26 resolved as shift
+WARNING: shift/reduce conflict for WHILE in state 26 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 71 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 95 resolved as shift

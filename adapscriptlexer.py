@@ -58,7 +58,7 @@ def t_FLOAT_VALUE(t):
     return t
 
 def t_STRING_VALUE(t):
-     r'[a-zA-Z]+'
+     r'\'[^\']*\'|\"[^\"]*\"'
      t.type = reserved.get(t.value,'STRING_VALUE')
      t.value = str(t.value)
      return t   
@@ -88,14 +88,14 @@ def t_error(t):
     t.lexer.skip(1)
 
 lexer = lex.lex()
-#test lexer sample output
-input = open("input3.txt", "r") 
+# #test lexer sample output
+# input = open("input2.txt", "r") 
 
-lexer.input(input.read()) #read from input sample file
-input.close()
+# lexer.input(input.read()) #read from input sample file
+# input.close()
 
-while True: 
-    tok = lexer.token()
-    if not tok:
-        break
-    print(tok)
+# while True: 
+#     tok = lexer.token()
+#     if not tok:
+#         break
+#     print(tok)
