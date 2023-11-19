@@ -7,7 +7,6 @@ class Node:
             self.children = []
         self.leaf = leaf
 
-    
     def to_string(self, level=0):
         ret = "\t" * level + repr(self.children) +repr(self.leaf) + "\n"
         for child in self.children:
@@ -20,7 +19,7 @@ class Node:
     def evaluate(self):
         raise NotImplementedError("Subclass must implement evaluate")
 
-    
+
 class ProgramNode(Node):
     def __init__(self, program_start):
         super().__init__('program', children=[program_start], leaf='program')
@@ -84,9 +83,7 @@ class BinOpNode(Node):
                     return left_value / right_value
                 else:
                     raise ValueError("Division by zero")
-        
-    
-    
+         
 class UnOpNode(Node):
     def __init__(self, operator, operand):
         super().__init__('unop', children=[operand], leaf=operator)
@@ -97,21 +94,18 @@ class UnOpNode(Node):
     def semantic_analysis(self):
         # Perform semantic analysis on the operand
         pass
-
         # Check that the operand is of the correct type
-        operand_type = type(self.children[0].leaf)
+        # operand_type = type(self.children[0].leaf)
 
-        if self.leaf == 'UNARY':
-            if not (operand_type in [int, float]):
-                raise TypeError("Operand must be an integer or float for unary operation")
+        # if self.leaf == 'UNARY':
+        #     if not (operand_type in [int, float]):
+        #         raise TypeError("Operand must be an integer or float for unary operation")
 
     def evaluate(self):
         operand_value = self.children[0].evaluate()
 
         if self.leaf == 'UNARY':
             return -operand_value
-        
-    
     
 class IntNode(Node):
     def __init__(self, value):
@@ -453,7 +447,7 @@ class ParentExprNode(Node):
 
 class ForLoopNode(Node):
     def __init__(self, assignment, condition, assignment2, body):
-        super().__init__('for_loop', children=[assignment, condition, assignment2, body], leaf='for_loop')
+        super().__init__('forloop', children=[assignment, condition, assignment2, body], leaf='for_loop')
 
     def to_string(self, level=0):
         return super().to_string(level+1)
@@ -463,7 +457,7 @@ class ForLoopNode(Node):
 
 class WhileLoopNode(Node):
     def __init__(self, condition, body):
-        super().__init__('while_loop', children=[condition, body], leaf='while_loop')
+        super().__init__('whileloop', children=[condition, body], leaf='while_loop')
     
     def to_string(self, level=0):
         return super().to_string(level+1)

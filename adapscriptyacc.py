@@ -1,10 +1,10 @@
-#Parser for adapscript language
-
+#Parser for AdapScript language
 import ply.yacc as yacc
 from adapscriptlexer import tokens
 from NodeAST import*
+from openai import OpenAI
 
-
+clientLLM = OpenAI()
 sym_Table = {}
 precedence = (
     ('nonassoc','GE', 'LE', 'EQ', 'NE', 'GT', 'LT', 'OR'),
@@ -109,9 +109,9 @@ def p_atom(p):
                 | STRING_VALUE
                 | variable'''
         if isinstance(p[1], int):
-            p[0] = IntNode([p[1]])   
+            p[0] = IntNode(p[1])   
         elif isinstance(p[1], float):
-            p[0] = FloatNode([p[1]])
+            p[0] = FloatNode(p[1])
         elif isinstance(p[1], str):
             p[0] = StringNode([p[1]])
         else:
@@ -140,7 +140,7 @@ def p_binary_expr(p):
                     | UNARY atoms
                     | atoms UNARY'''
         p[0] = BinOpNode(p[2], p[1], p[3])
-                    
+      
 def p_assignment(p):    
         '''assignment : datatype IDENTIFIER EQUAL expression 
                       | datatype IDENTIFIER EQUAL ACCEPT "(" ")" '''
@@ -170,7 +170,7 @@ def p_loop(p):
         
 
 def p_forLoop(p):
-        '''forLoop : FOR "(" expression ";" condition ";" expression ")" "{" statements "}"'''
+        '''forLoop : FOR "(" INT IDENTIFIER EQUAL INT_VALUE ";" condition ";" expression ")" "{" statements "}"'''
         p[0] = ForLoopNode([p[3], p[5], p[7], p[10]])
 
 def p_whileLoop(p):
@@ -182,7 +182,6 @@ def p_error(p):
    
 
 tree = []
-
 def printTree(node, level=0):
     if isinstance(node, list):
         for subnode in node:
@@ -213,7 +212,6 @@ def is_iterable(obj):
         return False
 
 parser = yacc.yacc()
-
 inputFile = open('input3.txt', 'r')
 data = inputFile.read()
 inputFile.close()

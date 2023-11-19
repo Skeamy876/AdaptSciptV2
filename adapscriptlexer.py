@@ -1,7 +1,6 @@
 # tokenizer for adapScript programming language
 import ply.lex as lex
 
-
 #dictionary of reserved words
 reserved = {
     'int':'INT',
@@ -45,8 +44,6 @@ t_AND = r'&&'
 t_ignore_WHITESPACE= r'[ \t\r\v\f]'
 t_ignore_COMMENTS = r'\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/'
 
-
-
 def t_INT_VALUE(t):
     r'[-]?[0-9]+'
     t.value = int(t.value)
@@ -88,8 +85,8 @@ def t_error(t):
     t.lexer.skip(1)
 
 lexer = lex.lex()
-# #test lexer sample output
-# input = open("input2.txt", "r") 
+#test lexer sample output
+# input = open("input4.txt", "r") 
 
 # lexer.input(input.read()) #read from input sample file
 # input.close()

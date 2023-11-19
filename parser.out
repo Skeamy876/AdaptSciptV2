@@ -67,7 +67,7 @@ Rule 55    loops -> loop
 Rule 56    loops -> loop loops
 Rule 57    loop -> forLoop
 Rule 58    loop -> whileLoop
-Rule 59    forLoop -> FOR ( expression ; condition ; expression ) { statements }
+Rule 59    forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
 Rule 60    whileLoop -> WHILE ( condition ) { statements }
 
 Terminals, with rules where they appear
@@ -85,18 +85,18 @@ COMMENTS             :
 DIV                  : 41
 ELSE                 : 54
 EQ                   : 45
-EQUAL                : 51 52
+EQUAL                : 51 52 59
 FLOAT                : 25
 FLOAT_VALUE          : 33
 FOR                  : 59
 FUNC                 : 2 14
 GE                   : 44
 GT                   : 47
-IDENTIFIER           : 14 16 17 18 19 23 36 51 52
+IDENTIFIER           : 14 16 17 18 19 23 36 51 52 59
 IF                   : 53 54
 INIT                 : 2
-INT                  : 24
-INT_VALUE            : 32
+INT                  : 24 59
+INT_VALUE            : 32 59
 LE                   : 43
 LT                   : 48
 MUL                  : 40
@@ -122,7 +122,7 @@ atoms                : 29 38 39 40 41 42 43 44 45 46 47 48 49 50
 binary_expr          : 31
 condition            : 6 59 60
 datatype             : 14 23 51 52
-expression           : 8 10 11 37 38 39 40 41 42 43 44 45 46 47 48 51 53 54 59 59
+expression           : 8 10 11 37 38 39 40 41 42 43 44 45 46 47 48 51 53 54 59
 forLoop              : 57
 function_body        : 14
 function_calls       : 5 17 19
@@ -249,7 +249,7 @@ state 7
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     RETURN          shift and go to state 17
@@ -387,7 +387,7 @@ state 10
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     }               shift and go to state 45
@@ -782,7 +782,6 @@ state 23
     WHILE           reduce using rule 29 (expression -> atoms .)
     )               reduce using rule 29 (expression -> atoms .)
     {               reduce using rule 29 (expression -> atoms .)
-    ;               reduce using rule 29 (expression -> atoms .)
     ADD             shift and go to state 51
     SUB             shift and go to state 52
     MUL             shift and go to state 53
@@ -823,7 +822,6 @@ state 24
     WHILE           reduce using rule 30 (expression -> paren_expr .)
     )               reduce using rule 30 (expression -> paren_expr .)
     {               reduce using rule 30 (expression -> paren_expr .)
-    ;               reduce using rule 30 (expression -> paren_expr .)
 
 
 state 25
@@ -850,7 +848,6 @@ state 25
     WHILE           reduce using rule 31 (expression -> binary_expr .)
     )               reduce using rule 31 (expression -> binary_expr .)
     {               reduce using rule 31 (expression -> binary_expr .)
-    ;               reduce using rule 31 (expression -> binary_expr .)
 
 
 state 26
@@ -861,7 +858,7 @@ state 26
     (56) loops -> . loop loops
     (57) loop -> . forLoop
     (58) loop -> . whileLoop
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
   ! shift/reduce conflict for FOR resolved as shift
@@ -936,7 +933,6 @@ state 28
     WHILE           reduce using rule 32 (atoms -> INT_VALUE .)
     )               reduce using rule 32 (atoms -> INT_VALUE .)
     {               reduce using rule 32 (atoms -> INT_VALUE .)
-    ;               reduce using rule 32 (atoms -> INT_VALUE .)
 
 
 state 29
@@ -974,7 +970,6 @@ state 29
     WHILE           reduce using rule 33 (atoms -> FLOAT_VALUE .)
     )               reduce using rule 33 (atoms -> FLOAT_VALUE .)
     {               reduce using rule 33 (atoms -> FLOAT_VALUE .)
-    ;               reduce using rule 33 (atoms -> FLOAT_VALUE .)
 
 
 state 30
@@ -1012,7 +1007,6 @@ state 30
     WHILE           reduce using rule 34 (atoms -> STRING_VALUE .)
     )               reduce using rule 34 (atoms -> STRING_VALUE .)
     {               reduce using rule 34 (atoms -> STRING_VALUE .)
-    ;               reduce using rule 34 (atoms -> STRING_VALUE .)
 
 
 state 31
@@ -1050,7 +1044,6 @@ state 31
     WHILE           reduce using rule 35 (atoms -> variable .)
     )               reduce using rule 35 (atoms -> variable .)
     {               reduce using rule 35 (atoms -> variable .)
-    ;               reduce using rule 35 (atoms -> variable .)
 
 
 state 32
@@ -1160,7 +1153,7 @@ state 39
 
 state 40
 
-    (59) forLoop -> FOR . ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> FOR . ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
 
     (               shift and go to state 66
 
@@ -1221,7 +1214,6 @@ state 44
     FOR             reduce using rule 36 (variable -> IDENTIFIER .)
     WHILE           reduce using rule 36 (variable -> IDENTIFIER .)
     {               reduce using rule 36 (variable -> IDENTIFIER .)
-    ;               reduce using rule 36 (variable -> IDENTIFIER .)
 
 
 state 45
@@ -1807,7 +1799,6 @@ state 62
     WHILE           reduce using rule 50 (binary_expr -> atoms UNARY .)
     )               reduce using rule 50 (binary_expr -> atoms UNARY .)
     {               reduce using rule 50 (binary_expr -> atoms UNARY .)
-    ;               reduce using rule 50 (binary_expr -> atoms UNARY .)
 
 
 state 63
@@ -1866,47 +1857,14 @@ state 65
     WHILE           reduce using rule 49 (binary_expr -> UNARY atoms .)
     )               reduce using rule 49 (binary_expr -> UNARY atoms .)
     {               reduce using rule 49 (binary_expr -> UNARY atoms .)
-    ;               reduce using rule 49 (binary_expr -> UNARY atoms .)
 
 
 state 66
 
-    (59) forLoop -> FOR ( . expression ; condition ; expression ) { statements }
-    (29) expression -> . atoms
-    (30) expression -> . paren_expr
-    (31) expression -> . binary_expr
-    (32) atoms -> . INT_VALUE
-    (33) atoms -> . FLOAT_VALUE
-    (34) atoms -> . STRING_VALUE
-    (35) atoms -> . variable
-    (37) paren_expr -> . ( expression )
-    (38) binary_expr -> . atoms ADD expression
-    (39) binary_expr -> . atoms SUB expression
-    (40) binary_expr -> . atoms MUL expression
-    (41) binary_expr -> . atoms DIV expression
-    (42) binary_expr -> . atoms OR expression
-    (43) binary_expr -> . atoms LE expression
-    (44) binary_expr -> . atoms GE expression
-    (45) binary_expr -> . atoms EQ expression
-    (46) binary_expr -> . atoms NE expression
-    (47) binary_expr -> . atoms GT expression
-    (48) binary_expr -> . atoms LT expression
-    (49) binary_expr -> . UNARY atoms
-    (50) binary_expr -> . atoms UNARY
-    (36) variable -> . IDENTIFIER
+    (59) forLoop -> FOR ( . INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
 
-    INT_VALUE       shift and go to state 28
-    FLOAT_VALUE     shift and go to state 29
-    STRING_VALUE    shift and go to state 30
-    (               shift and go to state 9
-    UNARY           shift and go to state 32
-    IDENTIFIER      shift and go to state 44
+    INT             shift and go to state 89
 
-    expression                     shift and go to state 89
-    atoms                          shift and go to state 23
-    paren_expr                     shift and go to state 24
-    binary_expr                    shift and go to state 25
-    variable                       shift and go to state 31
 
 state 67
 
@@ -1949,7 +1907,6 @@ state 69
     WHILE           reduce using rule 37 (paren_expr -> ( expression ) .)
     )               reduce using rule 37 (paren_expr -> ( expression ) .)
     {               reduce using rule 37 (paren_expr -> ( expression ) .)
-    ;               reduce using rule 37 (paren_expr -> ( expression ) .)
 
 
 state 70
@@ -2078,7 +2035,7 @@ state 76
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     RETURN          shift and go to state 17
@@ -2141,7 +2098,6 @@ state 77
     WHILE           reduce using rule 38 (binary_expr -> atoms ADD expression .)
     )               reduce using rule 38 (binary_expr -> atoms ADD expression .)
     {               reduce using rule 38 (binary_expr -> atoms ADD expression .)
-    ;               reduce using rule 38 (binary_expr -> atoms ADD expression .)
 
 
 state 78
@@ -2168,7 +2124,6 @@ state 78
     WHILE           reduce using rule 39 (binary_expr -> atoms SUB expression .)
     )               reduce using rule 39 (binary_expr -> atoms SUB expression .)
     {               reduce using rule 39 (binary_expr -> atoms SUB expression .)
-    ;               reduce using rule 39 (binary_expr -> atoms SUB expression .)
 
 
 state 79
@@ -2195,7 +2150,6 @@ state 79
     WHILE           reduce using rule 40 (binary_expr -> atoms MUL expression .)
     )               reduce using rule 40 (binary_expr -> atoms MUL expression .)
     {               reduce using rule 40 (binary_expr -> atoms MUL expression .)
-    ;               reduce using rule 40 (binary_expr -> atoms MUL expression .)
 
 
 state 80
@@ -2222,7 +2176,6 @@ state 80
     WHILE           reduce using rule 41 (binary_expr -> atoms DIV expression .)
     )               reduce using rule 41 (binary_expr -> atoms DIV expression .)
     {               reduce using rule 41 (binary_expr -> atoms DIV expression .)
-    ;               reduce using rule 41 (binary_expr -> atoms DIV expression .)
 
 
 state 81
@@ -2249,7 +2202,6 @@ state 81
     WHILE           reduce using rule 42 (binary_expr -> atoms OR expression .)
     )               reduce using rule 42 (binary_expr -> atoms OR expression .)
     {               reduce using rule 42 (binary_expr -> atoms OR expression .)
-    ;               reduce using rule 42 (binary_expr -> atoms OR expression .)
 
 
 state 82
@@ -2276,7 +2228,6 @@ state 82
     WHILE           reduce using rule 43 (binary_expr -> atoms LE expression .)
     )               reduce using rule 43 (binary_expr -> atoms LE expression .)
     {               reduce using rule 43 (binary_expr -> atoms LE expression .)
-    ;               reduce using rule 43 (binary_expr -> atoms LE expression .)
 
 
 state 83
@@ -2303,7 +2254,6 @@ state 83
     WHILE           reduce using rule 44 (binary_expr -> atoms GE expression .)
     )               reduce using rule 44 (binary_expr -> atoms GE expression .)
     {               reduce using rule 44 (binary_expr -> atoms GE expression .)
-    ;               reduce using rule 44 (binary_expr -> atoms GE expression .)
 
 
 state 84
@@ -2330,7 +2280,6 @@ state 84
     WHILE           reduce using rule 45 (binary_expr -> atoms EQ expression .)
     )               reduce using rule 45 (binary_expr -> atoms EQ expression .)
     {               reduce using rule 45 (binary_expr -> atoms EQ expression .)
-    ;               reduce using rule 45 (binary_expr -> atoms EQ expression .)
 
 
 state 85
@@ -2357,7 +2306,6 @@ state 85
     WHILE           reduce using rule 46 (binary_expr -> atoms NE expression .)
     )               reduce using rule 46 (binary_expr -> atoms NE expression .)
     {               reduce using rule 46 (binary_expr -> atoms NE expression .)
-    ;               reduce using rule 46 (binary_expr -> atoms NE expression .)
 
 
 state 86
@@ -2384,7 +2332,6 @@ state 86
     WHILE           reduce using rule 47 (binary_expr -> atoms GT expression .)
     )               reduce using rule 47 (binary_expr -> atoms GT expression .)
     {               reduce using rule 47 (binary_expr -> atoms GT expression .)
-    ;               reduce using rule 47 (binary_expr -> atoms GT expression .)
 
 
 state 87
@@ -2411,7 +2358,6 @@ state 87
     WHILE           reduce using rule 48 (binary_expr -> atoms LT expression .)
     )               reduce using rule 48 (binary_expr -> atoms LT expression .)
     {               reduce using rule 48 (binary_expr -> atoms LT expression .)
-    ;               reduce using rule 48 (binary_expr -> atoms LT expression .)
 
 
 state 88
@@ -2457,9 +2403,9 @@ state 88
 
 state 89
 
-    (59) forLoop -> FOR ( expression . ; condition ; expression ) { statements }
+    (59) forLoop -> FOR ( INT . IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
 
-    ;               shift and go to state 101
+    IDENTIFIER      shift and go to state 101
 
 
 state 90
@@ -2651,7 +2597,7 @@ state 98
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     }               shift and go to state 106
@@ -2723,13 +2669,10 @@ state 100
 
 state 101
 
-    (59) forLoop -> FOR ( expression ; . condition ; expression ) { statements }
-    (53) condition -> . IF expression { statements }
-    (54) condition -> . IF expression { statements } ELSE { statements }
+    (59) forLoop -> FOR ( INT IDENTIFIER . EQUAL INT_VALUE ; condition ; expression ) { statements }
 
-    IF              shift and go to state 21
+    EQUAL           shift and go to state 108
 
-    condition                      shift and go to state 108
 
 state 102
 
@@ -2823,9 +2766,9 @@ state 107
 
 state 108
 
-    (59) forLoop -> FOR ( expression ; condition . ; expression ) { statements }
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL . INT_VALUE ; condition ; expression ) { statements }
 
-    ;               shift and go to state 113
+    INT_VALUE       shift and go to state 113
 
 
 state 109
@@ -2882,7 +2825,7 @@ state 109
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     RETURN          shift and go to state 17
@@ -2961,42 +2904,10 @@ state 112
 
 state 113
 
-    (59) forLoop -> FOR ( expression ; condition ; . expression ) { statements }
-    (29) expression -> . atoms
-    (30) expression -> . paren_expr
-    (31) expression -> . binary_expr
-    (32) atoms -> . INT_VALUE
-    (33) atoms -> . FLOAT_VALUE
-    (34) atoms -> . STRING_VALUE
-    (35) atoms -> . variable
-    (37) paren_expr -> . ( expression )
-    (38) binary_expr -> . atoms ADD expression
-    (39) binary_expr -> . atoms SUB expression
-    (40) binary_expr -> . atoms MUL expression
-    (41) binary_expr -> . atoms DIV expression
-    (42) binary_expr -> . atoms OR expression
-    (43) binary_expr -> . atoms LE expression
-    (44) binary_expr -> . atoms GE expression
-    (45) binary_expr -> . atoms EQ expression
-    (46) binary_expr -> . atoms NE expression
-    (47) binary_expr -> . atoms GT expression
-    (48) binary_expr -> . atoms LT expression
-    (49) binary_expr -> . UNARY atoms
-    (50) binary_expr -> . atoms UNARY
-    (36) variable -> . IDENTIFIER
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE . ; condition ; expression ) { statements }
 
-    INT_VALUE       shift and go to state 28
-    FLOAT_VALUE     shift and go to state 29
-    STRING_VALUE    shift and go to state 30
-    (               shift and go to state 9
-    UNARY           shift and go to state 32
-    IDENTIFIER      shift and go to state 44
+    ;               shift and go to state 117
 
-    expression                     shift and go to state 117
-    atoms                          shift and go to state 23
-    paren_expr                     shift and go to state 24
-    binary_expr                    shift and go to state 25
-    variable                       shift and go to state 31
 
 state 114
 
@@ -3051,7 +2962,7 @@ state 114
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     }               shift and go to state 118
@@ -3145,7 +3056,7 @@ state 115
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     RETURN          shift and go to state 17
@@ -3239,7 +3150,7 @@ state 116
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     RETURN          shift and go to state 17
@@ -3280,10 +3191,13 @@ state 116
 
 state 117
 
-    (59) forLoop -> FOR ( expression ; condition ; expression . ) { statements }
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; . condition ; expression ) { statements }
+    (53) condition -> . IF expression { statements }
+    (54) condition -> . IF expression { statements } ELSE { statements }
 
-    )               shift and go to state 122
+    IF              shift and go to state 21
 
+    condition                      shift and go to state 122
 
 state 118
 
@@ -3369,7 +3283,7 @@ state 120
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     }               reduce using rule 15 (function_body -> statements .)
@@ -3461,7 +3375,7 @@ state 121
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     }               shift and go to state 124
@@ -3502,9 +3416,9 @@ state 121
 
 state 122
 
-    (59) forLoop -> FOR ( expression ; condition ; expression ) . { statements }
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition . ; expression ) { statements }
 
-    {               shift and go to state 125
+    ;               shift and go to state 125
 
 
 state 123
@@ -3559,7 +3473,60 @@ state 124
 
 state 125
 
-    (59) forLoop -> FOR ( expression ; condition ; expression ) { . statements }
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; . expression ) { statements }
+    (29) expression -> . atoms
+    (30) expression -> . paren_expr
+    (31) expression -> . binary_expr
+    (32) atoms -> . INT_VALUE
+    (33) atoms -> . FLOAT_VALUE
+    (34) atoms -> . STRING_VALUE
+    (35) atoms -> . variable
+    (37) paren_expr -> . ( expression )
+    (38) binary_expr -> . atoms ADD expression
+    (39) binary_expr -> . atoms SUB expression
+    (40) binary_expr -> . atoms MUL expression
+    (41) binary_expr -> . atoms DIV expression
+    (42) binary_expr -> . atoms OR expression
+    (43) binary_expr -> . atoms LE expression
+    (44) binary_expr -> . atoms GE expression
+    (45) binary_expr -> . atoms EQ expression
+    (46) binary_expr -> . atoms NE expression
+    (47) binary_expr -> . atoms GT expression
+    (48) binary_expr -> . atoms LT expression
+    (49) binary_expr -> . UNARY atoms
+    (50) binary_expr -> . atoms UNARY
+    (36) variable -> . IDENTIFIER
+
+    INT_VALUE       shift and go to state 28
+    FLOAT_VALUE     shift and go to state 29
+    STRING_VALUE    shift and go to state 30
+    (               shift and go to state 9
+    UNARY           shift and go to state 32
+    IDENTIFIER      shift and go to state 44
+
+    expression                     shift and go to state 126
+    atoms                          shift and go to state 23
+    paren_expr                     shift and go to state 24
+    binary_expr                    shift and go to state 25
+    variable                       shift and go to state 31
+
+state 126
+
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression . ) { statements }
+
+    )               shift and go to state 127
+
+
+state 127
+
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) . { statements }
+
+    {               shift and go to state 128
+
+
+state 128
+
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { . statements }
     (3) statements -> . statement
     (4) statements -> . statements statement
     (5) statement -> . function_calls
@@ -3611,7 +3578,7 @@ state 125
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
     RETURN          shift and go to state 17
@@ -3632,9 +3599,9 @@ state 125
     FOR             shift and go to state 40
     WHILE           shift and go to state 41
 
-    expression                     shift and go to state 15
     condition                      shift and go to state 13
-    statements                     shift and go to state 126
+    expression                     shift and go to state 15
+    statements                     shift and go to state 129
     statement                      shift and go to state 11
     function_calls                 shift and go to state 12
     function_declarations          shift and go to state 14
@@ -3650,9 +3617,9 @@ state 125
     forLoop                        shift and go to state 33
     whileLoop                      shift and go to state 34
 
-state 126
+state 129
 
-    (59) forLoop -> FOR ( expression ; condition ; expression ) { statements . }
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements . }
     (4) statements -> statements . statement
     (5) statement -> . function_calls
     (6) statement -> . condition
@@ -3703,10 +3670,10 @@ state 126
     (27) datatype -> . ADAPT
     (28) datatype -> . VOID
     (36) variable -> . IDENTIFIER
-    (59) forLoop -> . FOR ( expression ; condition ; expression ) { statements }
+    (59) forLoop -> . FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements }
     (60) whileLoop -> . WHILE ( condition ) { statements }
 
-    }               shift and go to state 127
+    }               shift and go to state 130
     RETURN          shift and go to state 17
     PRINT           shift and go to state 18
     IDENTIFIER      shift and go to state 20
@@ -3725,8 +3692,8 @@ state 126
     FOR             shift and go to state 40
     WHILE           shift and go to state 41
 
-    expression                     shift and go to state 15
     condition                      shift and go to state 13
+    expression                     shift and go to state 15
     statement                      shift and go to state 46
     function_calls                 shift and go to state 12
     function_declarations          shift and go to state 14
@@ -3742,28 +3709,28 @@ state 126
     forLoop                        shift and go to state 33
     whileLoop                      shift and go to state 34
 
-state 127
+state 130
 
-    (59) forLoop -> FOR ( expression ; condition ; expression ) { statements } .
+    (59) forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .
 
-    FOR             reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    WHILE           reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    }               reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    RETURN          reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    PRINT           reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    IDENTIFIER      reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    IF              reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    FUNC            reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    INT_VALUE       reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    FLOAT_VALUE     reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    STRING_VALUE    reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    (               reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    UNARY           reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    INT             reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    FLOAT           reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    STRING          reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    ADAPT           reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
-    VOID            reduce using rule 59 (forLoop -> FOR ( expression ; condition ; expression ) { statements } .)
+    FOR             reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    WHILE           reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    }               reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    RETURN          reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    PRINT           reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    IDENTIFIER      reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    IF              reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    FUNC            reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    INT_VALUE       reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    FLOAT_VALUE     reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    STRING_VALUE    reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    (               reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    UNARY           reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    INT             reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    FLOAT           reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    STRING          reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    ADAPT           reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
+    VOID            reduce using rule 59 (forLoop -> FOR ( INT IDENTIFIER EQUAL INT_VALUE ; condition ; expression ) { statements } .)
 
 WARNING: 
 WARNING: Conflicts:
