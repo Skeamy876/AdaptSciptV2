@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 import os
 
 
+# API REQUEST ARE LIMITED, DO NOT USE
+
 load_dotenv()
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
@@ -17,7 +19,7 @@ def chat_with_gpt(prompt):
             {"role": "user", "content": prompt}
         ]
     )
-    return response.choices[0].messsage.content.strip()
+    return response.choices[0].message.content
 
 
 if __name__ == "__main__":
