@@ -1,4 +1,4 @@
 func init(){
     string check = "Hello World"
-    
+    print(check)
 }

@@ -17,17 +17,20 @@ reserved = {
     'func':'FUNC',
     'print':'PRINT',
     'accept':'ACCEPT',
+    'fn':'FN',
 }
 
-literals = ['{', '}', '(', ')', ',','"', ';'] #list of literals
+literals = ['{', '}', '(', ')', ',','"', ';',':'] #list of literals
 
 #token definitions
 tokens = ['UNARY', 'ADD', 'SUB', 'DIV', 'MUL', 'OR', 'LE', 'GE', 'EQ', 'NE', 'GT', 'LT', 'AND', 'EQUAL',
-    'INT_VALUE', 'FLOAT_VALUE', 'STRING_VALUE', 'IDENTIFIER', 'WHITESPACE', 'COMMENTS'
+    'INT_VALUE', 'FLOAT_VALUE', 'STRING_VALUE', 'IDENTIFIER', 'WHITESPACE', 'COMMENTS', 'UMINUS', 'LPAREN', 'RPAREN'
 ]+list(reserved.values())
 
 
 t_UNARY = r'\+\+|--'
+t_LPAREN  = r'\('
+t_RPAREN  = r'\)'
 t_ADD = r'\+'
 t_SUB = r'-'
 t_DIV = r'/'
@@ -44,14 +47,15 @@ t_AND = r'&&'
 t_ignore_WHITESPACE= r'[ \t\r\v\f]'
 t_ignore_COMMENTS = r'\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/'
 
-def t_INT_VALUE(t):
-    r'[-]?[0-9]+'
-    t.value = int(t.value)
-    return t
 
 def t_FLOAT_VALUE(t):
-    r'[-]?[0-9]*\.?[0-9]+'
+    r'[0-9]*\.[0-9]+'
     t.value = float(t.value)
+    return t
+
+def t_INT_VALUE(t):
+    r'[0-9]+'
+    t.value = int(t.value)
     return t
 
 def t_STRING_VALUE(t):
@@ -85,8 +89,9 @@ def t_error(t):
     t.lexer.skip(1)
 
 lexer = lex.lex()
+
 #test lexer sample output
-# input = open("input4.txt", "r") 
+# input = open("input3.txt", "r") 
 
 # lexer.input(input.read()) #read from input sample file
 # input.close()

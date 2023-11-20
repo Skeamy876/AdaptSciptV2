@@ -1,0 +1,145 @@
+   yacc.py:3317:Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+   yacc.py:3368:
+   yacc.py:3369:Unused terminals:
+   yacc.py:3370:
+   yacc.py:3373:    AND
+   yacc.py:3373:    COMMENTS
+   yacc.py:3373:    UMINUS
+   yacc.py:3373:    UNARY
+   yacc.py:3373:    WHITESPACE
+   yacc.py:3377:
+   yacc.py:3378:Grammar
+   yacc.py:3379:
+   yacc.py:3381:Rule 0     S' -> program
+   yacc.py:3381:Rule 1     program -> programStart
+   yacc.py:3381:Rule 2     programStart -> FUNC INIT ( ) { statements }
+   yacc.py:3381:Rule 3     statements -> statement
+   yacc.py:3381:Rule 4     statements -> statements statement
+   yacc.py:3381:Rule 5     statement -> function_calls
+   yacc.py:3381:Rule 6     statement -> condition
+   yacc.py:3381:Rule 7     statement -> function_declarations
+   yacc.py:3381:Rule 8     statement -> expression
+   yacc.py:3381:Rule 9     statement -> loops
+   yacc.py:3381:Rule 10    statement -> RETURN expression
+   yacc.py:3381:Rule 11    statement -> PRINT ( expression )
+   yacc.py:3381:Rule 12    statement -> assignment
+   yacc.py:3381:Rule 13    function_declarations -> function_declaration
+   yacc.py:3381:Rule 14    function_declarations -> function_declarations function_declaration
+   yacc.py:3381:Rule 15    function_declaration -> FN IDENTIFIER ( ) : datatype { function_body }
+   yacc.py:3381:Rule 16    function_declaration -> FN IDENTIFIER ( parameters ) : datatype { function_body }
+   yacc.py:3381:Rule 17    function_body -> statements
+   yacc.py:3381:Rule 18    function_calls -> IDENTIFIER ( )
+   yacc.py:3381:Rule 19    function_calls -> IDENTIFIER ( ) function_calls
+   yacc.py:3381:Rule 20    function_calls -> IDENTIFIER ( parameters )
+   yacc.py:3381:Rule 21    function_calls -> IDENTIFIER ( parameters ) function_calls
+   yacc.py:3381:Rule 22    parameters -> parameterList
+   yacc.py:3381:Rule 23    parameterList -> parameter
+   yacc.py:3381:Rule 24    parameterList -> parameter , parameterList
+   yacc.py:3381:Rule 25    parameter -> IDENTIFIER
+   yacc.py:3381:Rule 26    parameter -> datatype IDENTIFIER
+   yacc.py:3381:Rule 27    datatype -> INT
+   yacc.py:3381:Rule 28    datatype -> FLOAT
+   yacc.py:3381:Rule 29    datatype -> STRING
+   yacc.py:3381:Rule 30    datatype -> ADAPT
+   yacc.py:3381:Rule 31    datatype -> VOID
+   yacc.py:3381:Rule 32    expression -> expression ADD expression
+   yacc.py:3381:Rule 33    expression -> expression SUB expression
+   yacc.py:3381:Rule 34    expression -> expression MUL expression
+   yacc.py:3381:Rule 35    expression -> expression DIV expression
+   yacc.py:3381:Rule 36    expression -> expression OR expression
+   yacc.py:3381:Rule 37    expression -> expression LE expression
+   yacc.py:3381:Rule 38    expression -> expression GE expression
+   yacc.py:3381:Rule 39    expression -> expression EQ expression
+   yacc.py:3381:Rule 40    expression -> expression NE expression
+   yacc.py:3381:Rule 41    expression -> expression GT expression
+   yacc.py:3381:Rule 42    expression -> expression LT expression
+   yacc.py:3381:Rule 43    expression -> atoms expression
+   yacc.py:3381:Rule 44    expression -> ( expression )
+   yacc.py:3381:Rule 45    atoms -> INT_VALUE
+   yacc.py:3381:Rule 46    atoms -> FLOAT_VALUE
+   yacc.py:3381:Rule 47    atoms -> STRING_VALUE
+   yacc.py:3381:Rule 48    atoms -> variable
+   yacc.py:3381:Rule 49    variable -> IDENTIFIER
+   yacc.py:3381:Rule 50    assignment -> datatype IDENTIFIER EQUAL expression
+   yacc.py:3381:Rule 51    assignment -> datatype IDENTIFIER EQUAL function_calls
+   yacc.py:3381:Rule 52    assignment -> datatype IDENTIFIER EQUAL ACCEPT ( )
+   yacc.py:3381:Rule 53    condition -> IF expression { statements }
+   yacc.py:3381:Rule 54    condition -> IF expression { statements } ELSE { statements }
+   yacc.py:3381:Rule 55    loops -> loop
+   yacc.py:3381:Rule 56    loops -> loop loops
+   yacc.py:3381:Rule 57    loop -> forLoop
+   yacc.py:3381:Rule 58    loop -> whileLoop
+   yacc.py:3381:Rule 59    forLoop -> FOR ( assignment ; expression ; expression ) { statements }
+   yacc.py:3381:Rule 60    whileLoop -> assignment WHILE ( expression ) { statements }
+   yacc.py:3399:
+   yacc.py:3400:Terminals, with rules where they appear
+   yacc.py:3401:
+   yacc.py:3405:(                    : 2 11 15 16 18 19 20 21 44 52 59 60
+   yacc.py:3405:)                    : 2 11 15 16 18 19 20 21 44 52 59 60
+   yacc.py:3405:,                    : 24
+   yacc.py:3405::                    : 15 16
+   yacc.py:3405:;                    : 59 59
+   yacc.py:3405:ACCEPT               : 52
+   yacc.py:3405:ADAPT                : 30
+   yacc.py:3405:ADD                  : 32
+   yacc.py:3405:AND                  : 
+   yacc.py:3405:COMMENTS             : 
+   yacc.py:3405:DIV                  : 35
+   yacc.py:3405:ELSE                 : 54
+   yacc.py:3405:EQ                   : 39
+   yacc.py:3405:EQUAL                : 50 51 52
+   yacc.py:3405:FLOAT                : 28
+   yacc.py:3405:FLOAT_VALUE          : 46
+   yacc.py:3405:FN                   : 15 16
+   yacc.py:3405:FOR                  : 59
+   yacc.py:3405:FUNC                 : 2
+   yacc.py:3405:GE                   : 38
+   yacc.py:3405:GT                   : 41
+   yacc.py:3405:IDENTIFIER           : 15 16 18 19 20 21 25 26 49 50 51 52
+   yacc.py:3405:IF                   : 53 54
+   yacc.py:3405:INIT                 : 2
+   yacc.py:3405:INT                  : 27
+   yacc.py:3405:INT_VALUE            : 45
+   yacc.py:3405:LE                   : 37
+   yacc.py:3405:LT                   : 42
+   yacc.py:3405:MUL                  : 34
+   yacc.py:3405:NE                   : 40
+   yacc.py:3405:OR                   : 36
+   yacc.py:3405:PRINT                : 11
+   yacc.py:3405:RETURN               : 10
+   yacc.py:3405:STRING               : 29
+   yacc.py:3405:STRING_VALUE         : 47
+   yacc.py:3405:SUB                  : 33
+   yacc.py:3405:UMINUS               : 
+   yacc.py:3405:UNARY                : 
+   yacc.py:3405:VOID                 : 31
+   yacc.py:3405:WHILE                : 60
+   yacc.py:3405:WHITESPACE           : 
+   yacc.py:3405:error                : 
+   yacc.py:3405:{                    : 2 15 16 53 54 54 59 60
+   yacc.py:3405:}                    : 2 15 16 53 54 54 59 60
+   yacc.py:3407:
+   yacc.py:3408:Nonterminals, with rules where they appear
+   yacc.py:3409:
+   yacc.py:3413:assignment           : 12 59 60
+   yacc.py:3413:atoms                : 43
+   yacc.py:3413:condition            : 6
+   yacc.py:3413:datatype             : 15 16 26 50 51 52
+   yacc.py:3413:expression           : 8 10 11 32 32 33 33 34 34 35 35 36 36 37 37 38 38 39 39 40 40 41 41 42 42 43 44 50 53 54 59 59 60
+   yacc.py:3413:forLoop              : 57
+   yacc.py:3413:function_body        : 15 16
+   yacc.py:3413:function_calls       : 5 19 21 51
+   yacc.py:3413:function_declaration : 13 14
+   yacc.py:3413:function_declarations : 7 14
+   yacc.py:3413:loop                 : 55 56
+   yacc.py:3413:loops                : 9 56
+   yacc.py:3413:parameter            : 23 24
+   yacc.py:3413:parameterList        : 22 24
+   yacc.py:3413:parameters           : 16 20 21
+   yacc.py:3413:program              : 0
+   yacc.py:3413:programStart         : 1
+   yacc.py:3413:statement            : 3 4
+   yacc.py:3413:statements           : 2 4 17 53 54 54 59 60
+   yacc.py:3413:variable             : 48
+   yacc.py:3413:whileLoop            : 58
+   yacc.py:3414:
