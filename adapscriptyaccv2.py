@@ -1,8 +1,7 @@
 import ply.yacc as yacc
 import math
 from adapscriptlexer import tokens
-from pprint import pprint
-
+from gptinterpreter import *
 
 precedence = (
     ('left','ADD','SUB'),
@@ -12,12 +11,15 @@ precedence = (
 
 symbol_table = {
 }
+tree= []
 
 
 start='program'
 def p_program(p):
     '''program : FUNC INIT LPAREN RPAREN "{" statements "}"'''
     p[0] = p[6]
+    tree.append(p[0])
+    
 
 def p_statements_group(p):
     '''
@@ -26,8 +28,11 @@ def p_statements_group(p):
     '''
     if len(p) == 2:
         p[0] = [p[1]]
+        tree.append(p[0])
     else:
         p[0] = p[1] + [p[2]]
+        tree.append(p[0])
+    tree.append(p[0])
  
 def p_statement_assign(p):
     '''
@@ -67,6 +72,7 @@ def p_statement_assign(p):
             # If not an integer or a float, keep it as a string
 
             symbol_table[p[1]] = {'datatype': 'adapt', 'value': value}
+    tree.append(p[0])
 
 
 
@@ -79,13 +85,17 @@ def p_statement_expression(p):
     if len(p) == 2:
         if isinstance(p[1], dict):
             print(p[1]['value'])
+            tree.append(p[1]['value'])
         else:
             print(p[1])
+            tree.append(p[1])
     elif len(p) == 5:
         if isinstance(p[3], dict):
             print(p[3]['value'])
+            tree.append(p[3]['value'])
         else:
             print(p[3])
+    tree.append(p[0])
 
 
 def p_expression_binop(p):
@@ -110,21 +120,24 @@ def p_expression_binop(p):
             p[0] = p[1] * p[3]
         elif p[2] == '/':
             p[0] = p[1] / p[3]
-            
+        tree.append([p[1], p[2], p[3], p[0]])
     else:
         print('Cannot perform arithmetic operations on non-numeric values')
+    tree.append(p[0])
 
 def p_expression_uminus(p):
     '''
     expression : SUB expression %prec UMINUS
     '''
     p[0] = -p[2]
+    tree.append(p[0])
 
 def p_expression_group(p):
     '''
     expression : LPAREN expression RPAREN
     '''
     p[0] = p[2]
+    tree.append(p[0])
 
 def p_expression_condition(p):
     '''
@@ -169,6 +182,7 @@ def p_expression_condition(p):
             p[0] = p[1] - 1
     else:
         print('Cannot perform logical operations on non-numeric values')
+    tree.append(p[0])
 
 
 
@@ -183,6 +197,7 @@ def p_expressions(p):
         p[0]=None
         return
     p[0] = [p[1]] if len(p) == 2 else p[1] + [p[3]]
+    tree.append(p[0])
 
 def p_expression_function(p):
     '''
@@ -191,11 +206,13 @@ def p_expression_function(p):
     if p[1] == 'pow':
         if len(p[3]) == 2:
             p[0]=math.pow(int(p[3][0]), int(p[3][1]))
+            tree.append(p[0])
         else:
             print('%s() function need two arguments' % p[1])
         return
     print('Undefined function \'%s\'' % p[1])
     p[0] = None
+
 
 def p_expression_if_else(p):
     '''
@@ -206,11 +223,15 @@ def p_expression_if_else(p):
     if len(p)==8:
         if p[3]:
             p[0] = p[6]
+            tree.append(p[0])
+
     elif len(p)==12:
         if p[3]:
             p[0] = p[6]
+            tree.append(p[0])
         else:
             p[0] = p[10]
+            tree.append(p[0])
 
 def p_expression_function_impl(p):
     '''
@@ -228,22 +249,25 @@ def p_expression_function_impl(p):
             print('Function \'%s\' already defined' % p[2])
         else:
             symbol_table[p[2]] = {'return_type': p[6], 'value': p[8]}
+            tree.append(p[0])
     elif len(p)==11:
         if p[2] in symbol_table:
             print('Function \'%s\' already defined' % p[2])
         else:
             symbol_table[p[2]] = {'return_type': p[7], 'value': p[9]}
+            tree.append(p[0])
 
 
 
 
-def p_expression_value(t):
+def p_expression_value(p):
     '''
     expression : INT_VALUE
                | FLOAT_VALUE
                | STRING_VALUE
     '''
-    t[0] = t[1]
+    p[0] = p[1]
+    tree.append(p[0])
 
 def p_expression_name(t):
     '''
@@ -251,6 +275,7 @@ def p_expression_name(t):
     '''
     try:
         t[0] = symbol_table[t[1]]
+        tree.append(t[0])
     except LookupError:
         print('Undefined name \'%s\'' % t[1])
         t[0] = None
@@ -263,6 +288,7 @@ def p_expression_forloop(p):
     condition = p[5]
     increment = p[7]
     statements = p[10]
+    tree.append({p[0]: [initial, condition, increment, statements]})
     
 
 
@@ -272,19 +298,40 @@ def p_expression_whileloop(p):
     '''
     condition = p[3]
     statements = p[6]
+    tree.append({p[0]: [condition, statements]})
 
-    pprint([0])
 
 def p_error(p):
     print(f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token '{p.value}'")
    
 
 parser = yacc.yacc(debug=0, write_tables=0)
-while True:
+# while True:
+#     for i in symbol_table:
+#         print(i, symbol_table[i])
+#     try:
+#         s = input("AdaptScript Shell>>> ")
+#     except EOFError:
+#         break
+#     parser.parse(s)
+
+def print_tree(tree):
+    for i in tree:
+        print(i)
+
+def print_symbol_table():
     for i in symbol_table:
         print(i, symbol_table[i])
-    try:
-        s = input("AdaptScript Shell>>> ")
-    except EOFError:
-        break
-    parser.parse(s)
+
+
+
+inputFile = open('input3.txt', 'r')
+data = inputFile.read()
+inputFile.close()
+ast = parser.parse(data)
+code_llm = GPTInterpreter()
+
+print(ast)
+print_symbol_table()
+print_tree(tree)
+print(code_llm.execute_with_gpt(tree))
