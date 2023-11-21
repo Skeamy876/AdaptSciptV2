@@ -4,7 +4,7 @@ import ply.lex as lex
 #dictionary of reserved words
 reserved = {
     'int':'INT',
-    'string':'STRING',
+    'str':'STR',
     'float':'FLOAT',
     'adapt':'ADAPT',
     'void':'VOID',

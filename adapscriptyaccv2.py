@@ -8,25 +8,84 @@ precedence = (
     ('right','UMINUS'),
 )
 
-symbol_table = {}
-start= 'statement'
-# start='program'
+symbol_table = {
+}
 
-# def p_program(p):
-#     '''program : FUNC INIT LPAREN RPAREN "{" statement "}"'''
-#     p[0] = p[6]
+
+start='program'
+
+def p_program(p):
+    '''program : FUNC INIT LPAREN RPAREN "{" statements "}"'''
+    p[0] = p[6]
+
+def p_statements_group(p):
+    '''
+    statements : statements statement
+               | statement
+    '''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[2]]
  
 def p_statement_assign(p):
     '''
     statement : IDENTIFIER EQUAL expression
+              | IDENTIFIER EQUAL ACCEPT LPAREN RPAREN
+              | INT IDENTIFIER EQUAL expression
+              | FLOAT IDENTIFIER EQUAL expression
+              | STR IDENTIFIER EQUAL expression
+              | ADAPT IDENTIFIER EQUAL expression
     '''
-    symbol_table[p[1]] = p[3]
+    if len(p) == 4:
+        # Assuming that the datatype is known or default
+        if p[1] in symbol_table:
+            print('Variable \'%s\' already defined' % p[1])
+        else:
+            symbol_table[p[1]] = {'datatype': 'adapt', 'value': p[3]}
+    elif len(p) == 5 and p[2] != 'accept':
+        if p[1]== type(p[4]).__name__:
+            if p[2] in symbol_table:
+                print('Variable \'%s\' already defined' % p[2])
+            else:
+                symbol_table[p[2]] = {'datatype': p[1], 'value': p[4]}
+        else:
+            print('Cannot assign %s to %s' % (type(p[4]).__name__, p[1]))
+    elif p[3] == 'accept':
+        if p[1] in symbol_table:
+            print('Variable \'%s\' already defined' % p[1])
+        else:
+            p[0] = input()
+            value = p[0]
+            # Check if the input is an integer
+            if value.isdigit():
+                value = int(value)
+            # Check if the input is a float
+            elif value.replace('.', '', 1).isdigit() and value.count('.') < 2:
+                value = float(value)
+            # If not an integer or a float, keep it as a string
+
+            symbol_table[p[1]] = {'datatype': 'adapt', 'value': value}
+
+
 
 def p_statement_expression(p):
     '''
     statement : expression
+            | PRINT LPAREN expression RPAREN
+            | PRINT LPAREN STRING_VALUE RPAREN
     '''
-    print(p[1])
+    if len(p) == 2:
+        if isinstance(p[1], dict):
+            print(p[1]['value'])
+        else:
+            print(p[1])
+    elif len(p) == 5:
+        if isinstance(p[3], dict):
+            print(p[3]['value'])
+        else:
+            print(p[3])
+
 
 def p_expression_binop(p):
     '''
@@ -35,14 +94,24 @@ def p_expression_binop(p):
                | expression DIV expression
                | expression MUL expression
     '''
-    if p[2] == '+':
-        p[0] = p[1] + p[3]
-    elif p[2] == '-':
-        p[0] = p[1] - p[3]
-    elif p[2] == '*':
-        p[0] = p[1] * p[3]
-    elif p[2] == '/':
-        p[0] = p[1] / p[3]
+    # Check if p[1] and p[3] are variables in the symbol table
+    if isinstance(p[1], dict):
+        p[1] = p[1]['value']
+    if isinstance(p[3], dict):
+        p[3] = p[3]['value']
+
+    if isinstance(p[1], (int, float)) and isinstance(p[3], (int, float)) or  p[1] == '+':
+        if p[2] == '+': 
+            p[0] = p[1] + p[3]
+        elif p[2] == '-':
+            p[0] = p[1] - p[3]
+        elif p[2] == '*':
+            p[0] = p[1] * p[3]
+        elif p[2] == '/':
+            p[0] = p[1] / p[3]
+            
+    else:
+        print('Cannot perform arithmetic operations on non-numeric values')
 
 def p_expression_uminus(p):
     '''
@@ -56,151 +125,55 @@ def p_expression_group(p):
     '''
     p[0] = p[2]
 
+
+# supports functions with two parameters only
 def p_expressions(p):
     '''
     expressions : expressions "," expression
-               | 
-            
+               | expression
+               |
     '''
     if len(p) == 0:
         p[0]=None
         return
     p[0] = [p[1]] if len(p) == 2 else p[1] + [p[3]]
 
-def p_expression_function(t):
+def p_expression_function(p):
     '''
     expression : IDENTIFIER LPAREN expressions RPAREN
     '''
-    if t[1] == 'sin':
-        if len(t[3]) == 1:
-            t[0]=math.sin(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
+    if p[1] == 'print':
+        print(*p[3], sep=' ')
         return
-    elif t[1] == 'cos':
-        if len(t[3]) == 1:
-            t[0]=math.cos(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
+    elif p[1] == 'accept':
+        symbol_table[p[3][0]] = input()
         return
-    elif t[1] == 'log':
-        if len(t[3]) == 1:
-            t[0]=math.log(float(t[3][0]))
+    elif p[1] == 'pow':
+        if len(p[3]) == 2:
+            p[0]=math.pow(int(p[3][0]), int(p[3][1]))
         else:
-            print('%s() function need one arguments' % t[1])
+            print('%s() function need two arguments' % p[1])
         return
-    elif t[1] == 'log10':
-        if len(t[3]) == 1:
-            t[0]=math.log10(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'log2':
-        if len(t[3]) == 1:
-            t[0]=math.log2(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'exp':
-        if len(t[3]) == 1:
-            t[0]=math.exp(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'sqrt':
-        if len(t[3]) == 1:
-            t[0]=math.sqrt(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'acos':
-        if len(t[3]) == 1:
-            t[0]=math.acos(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'atan':
-        if len(t[3]) == 1:
-            t[0]=math.atan(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'radians':
-        if len(t[3]) == 1:
-            t[0]=math.radians(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'sinh':
-        if len(t[3]) == 1:
-            t[0]=math.sinh(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'cosh':
-        if len(t[3]) == 1:
-            t[0]=math.cosh(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'tanh':
-        if len(t[3]) == 1:
-            t[0]=math.tanh(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'asin':
-        if len(t[3]) == 1:
-            t[0]=math.asin(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
+    print('Undefined function \'%s\'' % p[1])
+    p[0] = None
+
+# def p_expression_function_impl(p):
+#     '''
+#     expression : FN IDENTIFIER LPAREN RPAREN ":" return_type "{" statements "}"
+#                 | FN IDENTIFIER LPAREN EXPRESSION RPAREN ":" return_type "{" statements "}"
+#     '''
+#     if len(p)==10:
+#         symbol_table[p[2]] = {'return_type': 'adapt', 'value': p[8]}
 
 
 
-    elif t[1] == 'ceil':
-        if len(t[3]) == 1:
-            t[0]=math.ceil(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'fabs':
-        if len(t[3]) == 1:
-            t[0]=math.fabs(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'factorial':
-        if len(t[3]) == 1:
-            t[0]=math.factorial(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'floor':
-        if len(t[3]) == 1:
-            t[0]=math.floor(float(t[3][0]))
-        else:
-            print('%s() function need one arguments' % t[1])
-        return
-    elif t[1] == 'copysign':
-        if len(t[3]) == 2:
-            t[0]=math.copysign(int(t[3][0]), int(t[3][1]))
-        else:
-            print('%s() function need two arguments' % t[1])
-        return
-    elif t[1] == 'pow':
-        if len(t[3]) == 2:
-            t[0]=math.pow(int(t[3][0]), int(t[3][1]))
-        else:
-            print('%s() function need two arguments' % t[1])
-        return
-    print('Undefined function \'%s\'' % t[1])
-    t[0] = None
 
-def p_expression_number(t):
+
+def p_expression_value(t):
     '''
     expression : INT_VALUE
                | FLOAT_VALUE
+               | STRING_VALUE
     '''
     t[0] = t[1]
 
@@ -216,11 +189,13 @@ def p_expression_name(t):
 
 
 def p_error(p):
-    print(f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token '{p.value}' '{p.type}''")
+    print(f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token '{p.value}'")
    
 
 parser = yacc.yacc(debug=0, write_tables=0)
 while True:
+    for i in symbol_table:
+        print(i, symbol_table[i])
     try:
         s = input('> ')
     except EOFError:
