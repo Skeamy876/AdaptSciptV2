@@ -33,14 +33,15 @@ reserved = {
 literals = ['{', '}', '(', ')', ',','"', ';',':'] #list of literals
 
 #token definitions
-tokens = ['UNARY', 'ADD', 'SUB', 'DIV', 'MUL', 'OR', 'LE', 'GE', 'EQ', 'NE', 'GT', 'LT', 'AND', 'EQUAL',
+tokens = ['ADD', 'SUB', 'DIV', 'MUL', 'OR', 'LE', 'GE', 'EQ', 'NE', 'GT', 'LT', 'AND', 'EQUAL','INCREMENT', 'DECREMENT',
     'INT_VALUE', 'FLOAT_VALUE', 'STRING_VALUE', 'IDENTIFIER', 'WHITESPACE', 'COMMENTS', 'UMINUS', 'LPAREN', 'RPAREN'
 ]+list(reserved.values())
 
 
-t_UNARY = r'\+\+|--'
 t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
+t_INCREMENT = r'\+\+'
+t_DECREMENT = r'--'
 t_ADD = r'\+'
 t_SUB = r'-'
 t_DIV = r'/'

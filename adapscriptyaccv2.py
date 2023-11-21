@@ -1,6 +1,8 @@
 import ply.yacc as yacc
 import math
 from adapscriptlexer import tokens
+from pprint import pprint
+
 
 precedence = (
     ('left','ADD','SUB'),
@@ -13,7 +15,6 @@ symbol_table = {
 
 
 start='program'
-
 def p_program(p):
     '''program : FUNC INIT LPAREN RPAREN "{" statements "}"'''
     p[0] = p[6]
@@ -125,6 +126,51 @@ def p_expression_group(p):
     '''
     p[0] = p[2]
 
+def p_expression_condition(p):
+    '''
+    expression : expression LE expression
+               | expression GE expression
+               | expression EQ expression
+               | expression NE expression
+               | expression GT expression
+               | expression LT expression
+               | expression AND expression
+               | expression OR expression
+               | expression INCREMENT
+               | DECREMENT expression
+               
+    '''
+    if isinstance(p[1], dict):
+        p[1] = p[1]['value']
+    if isinstance(p[3], dict):
+        p[3] = p[3]['value']
+
+    #bug=print statement still executed even if condition is false
+    if isinstance(p[1], (int, float)) and isinstance(p[3], (int, float)):
+        if p[2] == '<=':
+            p[0] = p[1] <= p[3]
+        elif p[2] == '>=':
+            p[0] = p[1] >= p[3]
+        elif p[2] == '==':
+            p[0] = p[1] == p[3]
+        elif p[2] == '!=':
+            p[0] = p[1] != p[3]
+        elif p[2] == '>':
+            p[0] = p[1] > p[3]
+        elif p[2] == '<':
+            p[0] = p[1] < p[3]
+        elif p[2] == '&&':
+            p[0] = p[1] and p[3]
+        elif p[2] == '||':
+            p[0] = p[1] or p[3]
+        elif p[2] == '++':
+            p[0] = p[1] + 1
+        elif p[2] == '--':
+            p[0] = p[1] - 1
+    else:
+        print('Cannot perform logical operations on non-numeric values')
+
+
 
 # supports functions with two parameters only
 def p_expressions(p):
@@ -142,13 +188,7 @@ def p_expression_function(p):
     '''
     expression : IDENTIFIER LPAREN expressions RPAREN
     '''
-    if p[1] == 'print':
-        print(*p[3], sep=' ')
-        return
-    elif p[1] == 'accept':
-        symbol_table[p[3][0]] = input()
-        return
-    elif p[1] == 'pow':
+    if p[1] == 'pow':
         if len(p[3]) == 2:
             p[0]=math.pow(int(p[3][0]), int(p[3][1]))
         else:
@@ -157,14 +197,42 @@ def p_expression_function(p):
     print('Undefined function \'%s\'' % p[1])
     p[0] = None
 
-# def p_expression_function_impl(p):
-#     '''
-#     expression : FN IDENTIFIER LPAREN RPAREN ":" return_type "{" statements "}"
-#                 | FN IDENTIFIER LPAREN EXPRESSION RPAREN ":" return_type "{" statements "}"
-#     '''
-#     if len(p)==10:
-#         symbol_table[p[2]] = {'return_type': 'adapt', 'value': p[8]}
+def p_expression_if_else(p):
+    '''
+    expression : IF LPAREN expression RPAREN "{" statements "}" ELSE "{" statements "}"
+                | IF LPAREN expression RPAREN "{" statements "}"
 
+    '''
+    if len(p)==8:
+        if p[3]:
+            p[0] = p[6]
+    elif len(p)==12:
+        if p[3]:
+            p[0] = p[6]
+        else:
+            p[0] = p[10]
+
+def p_expression_function_impl(p):
+    '''
+    expression : FN IDENTIFIER LPAREN RPAREN ":" INT "{" statements "}"
+                | FN IDENTIFIER LPAREN RPAREN ":" FLOAT "{" statements "}"
+                | FN IDENTIFIER LPAREN RPAREN ":" STR "{" statements "}"
+                | FN IDENTIFIER LPAREN RPAREN ":" VOID "{" statements "}"
+                | FN IDENTIFIER LPAREN expressions RPAREN ":" INT "{" statements "}"
+                | FN IDENTIFIER LPAREN expressions RPAREN ":" FLOAT "{" statements "}"
+                | FN IDENTIFIER LPAREN expressions RPAREN ":" STR "{" statements "}"
+                | FN IDENTIFIER LPAREN expressions RPAREN ":" VOID "{" statements "}"
+    '''
+    if len(p)==10:
+        if p[2] in symbol_table:
+            print('Function \'%s\' already defined' % p[2])
+        else:
+            symbol_table[p[2]] = {'return_type': p[6], 'value': p[8]}
+    elif len(p)==11:
+        if p[2] in symbol_table:
+            print('Function \'%s\' already defined' % p[2])
+        else:
+            symbol_table[p[2]] = {'return_type': p[7], 'value': p[9]}
 
 
 
@@ -187,6 +255,25 @@ def p_expression_name(t):
         print('Undefined name \'%s\'' % t[1])
         t[0] = None
 
+def p_expression_forloop(p):
+    '''
+    expression : FOR LPAREN statement ";" expression ";" expression RPAREN "{" statements "}"
+    '''
+    initial = p[3]
+    condition = p[5]
+    increment = p[7]
+    statements = p[10]
+    
+
+
+def p_expression_whileloop(p):
+    '''
+    expression : statement WHILE LPAREN expression RPAREN "{" statements "}"
+    '''
+    condition = p[3]
+    statements = p[6]
+
+    pprint([0])
 
 def p_error(p):
     print(f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token '{p.value}'")
@@ -197,7 +284,7 @@ while True:
     for i in symbol_table:
         print(i, symbol_table[i])
     try:
-        s = input('> ')
+        s = input("AdaptScript Shell>>> ")
     except EOFError:
         break
     parser.parse(s)
