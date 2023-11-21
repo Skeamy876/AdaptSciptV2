@@ -1,6 +1,15 @@
 # tokenizer for adapScript programming language
 import ply.lex as lex
 
+
+#Snippets from adapScript programming language
+
+# func init() {
+#     print("Hello World")
+#     num=accept() #must not have a datype
+# }
+
+
 #dictionary of reserved words
 reserved = {
     'int':'INT',
@@ -19,6 +28,7 @@ reserved = {
     'accept':'ACCEPT',
     'fn':'FN',
 }
+
 
 literals = ['{', '}', '(', ')', ',','"', ';',':'] #list of literals
 
@@ -90,7 +100,7 @@ def t_error(t):
 
 lexer = lex.lex()
 
-#test lexer sample output
+# test lexer sample output
 # input = open("input3.txt", "r") 
 
 # lexer.input(input.read()) #read from input sample file
