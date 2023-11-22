@@ -1,7 +1,6 @@
 import ply.yacc as yacc
 import math
 from adapscriptlexer import tokens
-from gptinterpreter import *
 
 precedence = (
     ('left','ADD','SUB'),
@@ -18,7 +17,7 @@ start='program'
 def p_program(p):
     '''program : FUNC INIT LPAREN RPAREN "{" statements "}"'''
     p[0] = p[6]
-    tree.append(p[0])
+    
     
 
 def p_statements_group(p):
@@ -28,11 +27,11 @@ def p_statements_group(p):
     '''
     if len(p) == 2:
         p[0] = [p[1]]
-        tree.append(p[0])
+        
     else:
         p[0] = p[1] + [p[2]]
-        tree.append(p[0])
-    tree.append(p[0])
+        
+    
  
 def p_statement_assign(p):
     '''
@@ -72,7 +71,7 @@ def p_statement_assign(p):
             # If not an integer or a float, keep it as a string
 
             symbol_table[p[1]] = {'datatype': 'adapt', 'value': value}
-    tree.append(p[0])
+    
 
 
 
@@ -95,7 +94,7 @@ def p_statement_expression(p):
             tree.append(p[3]['value'])
         else:
             print(p[3])
-    tree.append(p[0])
+    
 
 
 def p_expression_binop(p):
@@ -123,21 +122,21 @@ def p_expression_binop(p):
         tree.append([p[1], p[2], p[3], p[0]])
     else:
         print('Cannot perform arithmetic operations on non-numeric values')
-    tree.append(p[0])
+    
 
 def p_expression_uminus(p):
     '''
     expression : SUB expression %prec UMINUS
     '''
     p[0] = -p[2]
-    tree.append(p[0])
+    
 
 def p_expression_group(p):
     '''
     expression : LPAREN expression RPAREN
     '''
     p[0] = p[2]
-    tree.append(p[0])
+    
 
 def p_expression_condition(p):
     '''
@@ -182,7 +181,7 @@ def p_expression_condition(p):
             p[0] = p[1] - 1
     else:
         print('Cannot perform logical operations on non-numeric values')
-    tree.append(p[0])
+    
 
 
 
@@ -197,7 +196,7 @@ def p_expressions(p):
         p[0]=None
         return
     p[0] = [p[1]] if len(p) == 2 else p[1] + [p[3]]
-    tree.append(p[0])
+    
 
 def p_expression_function(p):
     '''
@@ -206,7 +205,7 @@ def p_expression_function(p):
     if p[1] == 'pow':
         if len(p[3]) == 2:
             p[0]=math.pow(int(p[3][0]), int(p[3][1]))
-            tree.append(p[0])
+            
         else:
             print('%s() function need two arguments' % p[1])
         return
@@ -223,15 +222,15 @@ def p_expression_if_else(p):
     if len(p)==8:
         if p[3]:
             p[0] = p[6]
-            tree.append(p[0])
+            
 
     elif len(p)==12:
         if p[3]:
             p[0] = p[6]
-            tree.append(p[0])
+            
         else:
             p[0] = p[10]
-            tree.append(p[0])
+            
 
 def p_expression_function_impl(p):
     '''
@@ -249,13 +248,13 @@ def p_expression_function_impl(p):
             print('Function \'%s\' already defined' % p[2])
         else:
             symbol_table[p[2]] = {'return_type': p[6], 'value': p[8]}
-            tree.append(p[0])
+            
     elif len(p)==11:
         if p[2] in symbol_table:
             print('Function \'%s\' already defined' % p[2])
         else:
             symbol_table[p[2]] = {'return_type': p[7], 'value': p[9]}
-            tree.append(p[0])
+            
 
 
 
@@ -267,7 +266,7 @@ def p_expression_value(p):
                | STRING_VALUE
     '''
     p[0] = p[1]
-    tree.append(p[0])
+    
 
 def p_expression_name(t):
     '''
@@ -306,32 +305,30 @@ def p_error(p):
    
 
 parser = yacc.yacc(debug=0, write_tables=0)
-# while True:
-#     for i in symbol_table:
-#         print(i, symbol_table[i])
-#     try:
-#         s = input("AdaptScript Shell>>> ")
-#     except EOFError:
-#         break
-#     parser.parse(s)
-
-def print_tree(tree):
-    for i in tree:
-        print(i)
-
-def print_symbol_table():
+while True:
     for i in symbol_table:
         print(i, symbol_table[i])
+    try:
+        s = input("AdaptScript Shell>>> ")
+    except EOFError:
+        break
+    parser.parse(s)
+
+# def print_tree(tree):
+#     for i in tree:
+#         print(i)
+
+# def print_symbol_table():
+#     for i in symbol_table:
+#         print(i, symbol_table[i])
 
 
 
-inputFile = open('input3.txt', 'r')
-data = inputFile.read()
-inputFile.close()
-ast = parser.parse(data)
-code_llm = GPTInterpreter()
+# inputFile = open('input3.txt', 'r')
+# data = inputFile.read()
+# inputFile.close()
+# ast = parser.parse(data)
 
-print(ast)
-print_symbol_table()
-print_tree(tree)
-print(code_llm.execute_with_gpt(tree))
+# print(ast)
+# print_symbol_table()
+# print_tree(tree)

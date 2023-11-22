@@ -34,7 +34,7 @@ literals = ['{', '}', '(', ')', ',','"', ';',':'] #list of literals
 
 #token definitions
 tokens = ['ADD', 'SUB', 'DIV', 'MUL', 'OR', 'LE', 'GE', 'EQ', 'NE', 'GT', 'LT', 'AND', 'EQUAL','INCREMENT', 'DECREMENT',
-    'INT_VALUE', 'FLOAT_VALUE', 'STRING_VALUE', 'IDENTIFIER', 'WHITESPACE', 'COMMENTS', 'UMINUS', 'LPAREN', 'RPAREN'
+    'INT_VALUE', 'FLOAT_VALUE', 'STRING_VALUE', 'IDENTIFIER', 'UMINUS', 'LPAREN', 'RPAREN'
 ]+list(reserved.values())
 
 
@@ -55,8 +55,7 @@ t_NE = r'!='
 t_GT = r'>'
 t_LT = r'<'
 t_AND = r'&&'
-t_ignore_WHITESPACE= r'[ \t\r\v\f]'
-t_ignore_COMMENTS = r'\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/'
+t_ignore  = ' \t'
 
 
 def t_FLOAT_VALUE(t):
@@ -102,7 +101,7 @@ def t_error(t):
 lexer = lex.lex()
 
 # test lexer sample output
-# input = open("input3.txt", "r") 
+# input = open("teststrings/input3.txt", "r") 
 
 # lexer.input(input.read()) #read from input sample file
 # input.close()

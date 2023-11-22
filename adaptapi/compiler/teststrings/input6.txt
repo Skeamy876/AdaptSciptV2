@@ -1,0 +1,10 @@
+func init(){
+    int a = 2
+    int b = 3
+     fn sum(int a, int b):int{
+         return a+b
+    }
+    int total = sum(a,b)
+    print(total)
+   
+}

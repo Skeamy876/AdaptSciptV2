@@ -1,6 +1,0 @@
-func init(){
-    int total = sum(a,b)
-    fn sum(int a, int b):int{
-         return a+b
-    }
-}
