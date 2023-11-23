@@ -299,28 +299,32 @@ def p_error(p):
     exit(1)
 
 
+    
+
+
 @app.route('/execute', methods=['POST'])
 def execute_code():
     data = request.get_json()
     code = data['code']
-
     result, error = execute_adapscript(code)
-
     if error:
         return jsonify({'error': error})
     else:
         return jsonify({'result': result})
 
-
 def execute_adapscript(code):
-    parser = yacc.yacc(debug=0, write_tables=0)
     palm = PalmInterpreter()
-
-    try:
+    parser = yacc.yacc(write_tables=False, debug=False)
+    try:  
         result = parser.parse(code)
         return palm.interpret(result), None
     except Exception as e:
         return None, str(e)
+
+@app.after_request  
+def clear_symbol_table(response):
+    symbol_table.clear()
+    return response
 
 if __name__ == '__main__':
     app.run(host='10.0.2.2', port=5000, debug=True)
