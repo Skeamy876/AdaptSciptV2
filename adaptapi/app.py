@@ -5,7 +5,7 @@ from compiler.palmInterpreter import PalmInterpreter
 import ply.yacc as yacc
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r'/*': {'origins': '*'}})
 
 
 precedence = (
