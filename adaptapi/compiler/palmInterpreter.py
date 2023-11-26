@@ -11,7 +11,11 @@ class PalmInterpreter:
         self.model = self.models[0].name
 
     def interpret(self, ast):
-        prompt = f"return the correct result for this AST: {ast}"
+        prompt = f'''
+        You are a code interpreter for my language, 
+        take into account the scope of varibles and the action of any functions 
+        in my Abstract Syntax Tree and return the correct result for this Abstract Syntax Tree: {ast}'''
+
         completion = palm.generate_text(
             model=self.model,
             prompt=prompt,

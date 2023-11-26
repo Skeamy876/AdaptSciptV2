@@ -310,7 +310,7 @@ parser = yacc.yacc(debug=0, write_tables=0)
 
 
 palm = PalmInterpreter()
-inputFile = open('teststrings/input1.txt', 'r')
+inputFile = open('teststrings/input6.txt', 'r')
 data = inputFile.read()
 inputFile.close()
 ast = parser.parse(data)

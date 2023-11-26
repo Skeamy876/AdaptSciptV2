@@ -293,31 +293,31 @@ def p_expression_whileloop(p):
     '''
     p[0] = ('whileloop',p[1],p[4],p[7])
 
-
 def p_error(p):
     print(f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token '{p.value}'")
     exit(1)
 
 
-    
 
 
 @app.route('/execute', methods=['POST'])
 def execute_code():
     data = request.get_json()
     code = data['code']
-    result, error = execute_adapscript(code)
+    result, error, semantic_result = execute_adapscript(code)
     if error:
         return jsonify({'error': error})
     else:
-        return jsonify({'result': result})
+        return jsonify({'result': result,
+                        'semantic_result': semantic_result
+                        })
 
 def execute_adapscript(code):
     palm = PalmInterpreter()
     parser = yacc.yacc(write_tables=False, debug=False)
     try:  
         result = parser.parse(code)
-        return palm.interpret(result), None
+        return palm.interpret(result), None, result
     except Exception as e:
         return None, str(e)
 
