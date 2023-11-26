@@ -304,7 +304,7 @@ def p_error(p):
 def execute_code():
     data = request.get_json()
     code = data['code']
-    result, error, semantic_result = execute_adapscript(code)
+    result,semantic_result,error = execute_adapscript(code)
     if error:
         return jsonify({'error': error})
     else:
@@ -317,7 +317,7 @@ def execute_adapscript(code):
     parser = yacc.yacc(write_tables=False, debug=False)
     try:  
         result = parser.parse(code)
-        return palm.interpret(result), None, result
+        return palm.interpret(result),result, None
     except Exception as e:
         return None, str(e)
 
