@@ -49,21 +49,21 @@ def p_statement_assign(p):
     if len(p) == 4:
         # Assuming that the datatype is known or default
         if p[1] in symbol_table:
-            print('Variable \'%s\' already defined' % p[1])
+            raise Exception('Variable \'%s\' already defined' % p[1])
         else:
             symbol_table[p[1]] = {'datatype': 'adapt', 'value': p[3]}
             p[0] = ('assignment',p[1],p[3])
     elif len(p) == 5 and p[2] != 'accept':
         # if p[1]== type(p[4]).__name__:
         #     if p[2] in symbol_table:
-        #         print('Variable \'%s\' already defined' % p[2])
+        #         raise Exception('Variable \'%s\' already defined' % p[2])
         #     else:
         #         symbol_table[p[2]] = {'datatype': p[1], 'value': p[4]}
         #         p[0] = ('assignment',p[2],p[4])
         # else:
         #     print('Cannot assign %s to %s' % (type(p[4]).__name__, p[1]))
         if p[2] in symbol_table:
-                print('Variable \'%s\' already defined' % p[2])
+                raise Exception('Variable \'%s\' already defined' % p[2])
         else:
             symbol_table[p[2]] = {'datatype': p[1], 'value': p[4]}
             p[0] = ('assignment',p[2],p[4])
@@ -71,7 +71,7 @@ def p_statement_assign(p):
     
     elif p[3] == 'accept':
         if p[1] in symbol_table:
-            print('Variable \'%s\' already defined' % p[1])
+            raise Exception('Variable \'%s\' already defined' % p[1])
         else:
             p[0] = input()
             value = p[0]
@@ -127,7 +127,7 @@ def p_expression_binop(p):
     if isinstance(p[1], (int, float)) and isinstance(p[3], (int, float)) or p[2] in ['+','-', '*', '/']:
        p[0]= ('binop',p[1],p[2],p[3])
     else:
-        print('Cannot perform arithmetic operations on non-numeric values')
+        raise Exception('Cannot perform arithmetic operations on non-numeric values')
     
 
 def p_expression_uminus(p):
@@ -172,7 +172,7 @@ def p_expression_condition(p):
     if isinstance(p[1], (int, float, tuple)) and isinstance(p[3], (int, float, tuple)):
        p[0]= ('condition',p[1],p[2],p[3])
     else:
-        print('Cannot perform logical operations on non-numeric values')
+        raise Exception('Cannot perform logical operations on non-numeric values')
     
 
 
@@ -199,16 +199,16 @@ def p_expression_function(p):
             p[0] =('math-pow',p[3][0], p[3][1])
             
         else:
-            print('%s() function need two arguments' % p[1])
+            raise Exception('%s() function need two arguments' % p[1])
         
     elif p[1] in symbol_table:
         if len(p[3]) == 1:
             if symbol_table[p[1]]['return_type'] == symbol_table[p[3][0][1]]['datatype']:
                 p[0] = ('function',p[1],p[3])
             else:
-                print('Cannot assign %s to %s' % (symbol_table[p[3][0][1]]['datatype'], symbol_table[p[1]]['return_type']))
-        else:
-            print('%s() function need one argument' % p[1])
+                raise Exception('Cannot assign %s to %s' % (symbol_table[p[3][0][1]]['datatype'], symbol_table[p[1]]['return_type']))
+        elif len(p[3]) == 0:
+            raise Exception('%s() function need one argument' % p[1])
     p[0] = None
 
 
@@ -245,22 +245,18 @@ def p_expression_function_impl(p):
     '''
     if len(p)==10:
         if p[2] in symbol_table:
-            print('Function \'%s\' already defined' % p[2])
+            raise Exception('Function \'%s\' already defined' % p[2])
         else:
-            symbol_table[p[2]] = {'return_type': p[6], 'value': p[8]}
+            symbol_table[p[2]] = {'return_type': p[6], 'value': p[8], 'params': None}
             p[0] = ('function-impl',p[2],p[6],p[8])
             
     elif len(p)==11:
         if p[2] in symbol_table:
-            print('Function \'%s\' already defined' % p[2])
+            raise Exception('Function \'%s\' already defined' % p[2])
         else:
-            symbol_table[p[2]] = {'return_type': p[7], 'value': p[9]}
-            p[0] = ('function-impl',p[2],p[7],p[9])
+            symbol_table[p[2]] = {'return_type': p[7], 'value': p[9], 'params': p[3]}
+            p[0] = ('function-impl',p[2],p[3],p[7],p[9])
             
-
-
-
-
 def p_expression_value(p):
     '''
     expression : INT_VALUE
@@ -294,7 +290,7 @@ def p_expression_whileloop(p):
     p[0] = ('whileloop',p[1],p[4],p[7])
 
 def p_error(p):
-    print(f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token '{p.value}'")
+    raise Exception(f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token '{p.value}'")
     exit(1)
 
 
@@ -304,20 +300,18 @@ def p_error(p):
 def execute_code():
     data = request.get_json()
     code = data['code']
-    result,semantic_result,error = execute_adapscript(code)
+    result,error = execute_adapscript(code)
     if error:
         return jsonify({'error': error})
     else:
-        return jsonify({'result': result,
-                        'semantic_result': semantic_result
-                        })
+        return jsonify({'result': result})
 
 def execute_adapscript(code):
     palm = PalmInterpreter()
     parser = yacc.yacc(write_tables=False, debug=False)
     try:  
         result = parser.parse(code)
-        return palm.interpret(result),result, None
+        return palm.interpret(result),None
     except Exception as e:
         return None, str(e)
 

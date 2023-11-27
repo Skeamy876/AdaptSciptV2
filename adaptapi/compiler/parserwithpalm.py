@@ -200,7 +200,7 @@ def p_expression_function(p):
                 p[0] = ('function',p[1],p[3])
             else:
                 print('Cannot assign %s to %s' % (symbol_table[p[3][0][1]]['datatype'], symbol_table[p[1]]['return_type']))
-        else:
+        elif len(p[3]) == 0:
             print('%s() function need one argument' % p[1])
     p[0] = None
 
@@ -240,15 +240,15 @@ def p_expression_function_impl(p):
         if p[2] in symbol_table:
             print('Function \'%s\' already defined' % p[2])
         else:
-            symbol_table[p[2]] = {'return_type': p[6], 'value': p[8]}
+            symbol_table[p[2]] = {'return_type': p[6], 'value': p[8], 'params': None}
             p[0] = ('function-impl',p[2],p[6],p[8])
             
     elif len(p)==11:
         if p[2] in symbol_table:
             print('Function \'%s\' already defined' % p[2])
         else:
-            symbol_table[p[2]] = {'return_type': p[7], 'value': p[9]}
-            p[0] = ('function-impl',p[2],p[7],p[9])
+            symbol_table[p[2]] = {'return_type': p[7], 'value': p[9], 'params': p[3]}
+            p[0] = ('function-impl',p[2],p[3],p[7],p[9])
             
 
 

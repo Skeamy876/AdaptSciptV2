@@ -6,5 +6,4 @@ func init(){
     }
     int total = sum(a,b)
     print(total)
-   
 }

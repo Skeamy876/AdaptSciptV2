@@ -12,9 +12,8 @@ class PalmInterpreter:
 
     def interpret(self, ast):
         prompt = f'''
-        You are a code interpreter for my language, 
-        take into account the scope of varibles and the action of any functions 
-        in my Abstract Syntax Tree and return the correct result for this Abstract Syntax Tree: {ast}'''
+        You are a code interpreter, and you are given the following AST to produce the result of the action it shows:{ast}
+        '''
 
         completion = palm.generate_text(
             model=self.model,
