@@ -1,8 +1,8 @@
-## AdaptScript Programming Language
-# overview
+# AdaptScript Programming Language
+## overview
 AdaptScript is a general-purpose programming language designed and implemented using PLY (Python Lex-Yacc). This project provides support for essential programming language features, including iteration, control structures, arithmetic operations, functions, and loops. The language is developed with a focus on simplicity, flexibility, and ease of use.
 
-# Features
+## Features
 Lexical and Syntax Analysis: The project includes a well-defined tokenizer and parser to perform lexical and syntax analysis on AdaptScript code.
 
 Arithmetic Operations: AdaptScript supports a wide range of arithmetic operations, allowing users to perform mathematical computations within their programs.
@@ -17,7 +17,7 @@ Flask API Integration: The project includes a Flask API that enables developers 
 
 Integration with PALM2 LLM: The parse tree is then sent to the PALM2 Language Level Machine (LLM) for code interpretation and optimization. This integration allows for efficient execution and improved performance of AdaptScript programs.
 
-# Getting Started
+## Getting Started
 To get started with AdaptScript, follow these steps:
 
 1. Clone the Repository:
